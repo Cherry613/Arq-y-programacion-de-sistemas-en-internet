@@ -1,4 +1,4 @@
-import { Request, Response } from "npm:express@4.18.2"; // --> para q dejen de salir en rojo, aunq no pasa nada
+import { Request, Response } from "npm:express@4.18.2"; 
 import ProductModel from "../db/product.ts";
 
 const addProducts = async (req: Request, res: Response) => {
