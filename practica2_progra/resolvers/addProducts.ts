@@ -9,16 +9,19 @@ const addProducts = async (req: Request, res: Response) => {
       return;
     }
 
+    //no podremos añadir productos con precio negativos
     if(price < 0){
       res.status(400).send("The price can't be negative");
     }
 
+    //no podremos añadir productos con stock negativo 
     if (stock < 0) {
       res.status(400).send("stock can't be negative");
       return;
 
     }
 
+    //no añadiremos un producto que ya exista en la base de datos
     const alreadyExists = await ProductModel.findOne({ name }).exec();
     if (alreadyExists) {
       res.status(400).send("That product already exists");

@@ -9,6 +9,7 @@ const addClients = async (req: Request, res: Response) => {
       return;
     }
 
+    //comprobamos que no estemos intentando añadir un cliente que ya este
     const alreadyExists = await ClientModel.findOne({ cif }).exec();
     if (alreadyExists) {
       res.status(400).send("That client already exists");

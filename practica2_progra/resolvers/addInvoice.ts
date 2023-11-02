@@ -10,6 +10,7 @@ const addInvoice = async (req: Request, res: Response) => {
       return;
     }
 
+    //comprobamos que exista el cliente en nuestra base de datos 
     const clientExists = await ClientModel.findOne({ _id: client }).exec();
     if (!clientExists) {
       res.status(400).send("This client doesn't exists");
