@@ -19,11 +19,14 @@ const ingresar_dinero = async (req: Request, res: Response) => {
         res.status(400).send("No puedes ingresar una cantidad de dinero negativa o igual a 0");
         return;
       }
+
       const dinero_actualizado = clienteExists.dinero + dinero;
+      const mensaje = `Ingreso de ${dinero} al cliente ${clienteExists}`;
+      clienteExists.movimientos.push(mensaje);
 
       const updated = await ClienteModel.findOneAndUpdate(
         { _id : id },
-        { dinero: dinero_actualizado },
+        { dinero: dinero_actualizado, movimientos: clienteExists.movimientos },
         { new: true }
       ).exec();
   

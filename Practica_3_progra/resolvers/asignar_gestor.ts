@@ -30,6 +30,10 @@ const asignar_gestor = async (req: Request, res: Response) => {
       res.status(400).send("El cliente ya tiene un gestor");
       return;
     }
+    if(cliente.id_gestor === id_gestor){
+      res.status(400).send("El gestor ya tiene este cliente.");
+      return;
+    }
 
     // añadimos el cliente al array de clientes del gestor
     gestor.clientes.push(cliente._id);
@@ -55,6 +59,8 @@ const asignar_gestor = async (req: Request, res: Response) => {
       res.status(404).send("No se pudo actualizar el gestor");
       return;
     }
+
+    res.status(200).send("Gestor asignado correctamente.");
 
   } catch (error) {
     res.status(500).send(error.message);

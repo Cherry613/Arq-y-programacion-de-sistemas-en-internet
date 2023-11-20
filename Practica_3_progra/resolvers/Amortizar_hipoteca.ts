@@ -34,10 +34,13 @@ const amortizar = async (req: Request, res: Response) => {
       const total_hipoteca = hipoteca.importe_total - mensualidad;
       const cuotas_restantes = hipoteca.cuotas -1;
 
+      const mensaje = `Pago de ${mensualidad} para la hipoteca ${id_hipoteca}`;
+      cliente.movimientos.push(mensaje);
+
       //actualizamos el dinero que le queda al cliente despues de pagar la hipoteca
       const updated_1= await ClienteModel.findOneAndUpdate(
         { _id : cliente._id },
-        { dinero: dinero_cliente },
+        { dinero: dinero_cliente, movimientos: cliente.movimientos },
         { new: true }
       ).exec();
 
@@ -76,6 +79,8 @@ const amortizar = async (req: Request, res: Response) => {
         res.status(404).send("No se pudo pagar la hipoteca");
         return;
       }
+
+      res.status(200).send("Cuota pagada");
 
     } catch (error) {
       res.status(500).send(error.message);

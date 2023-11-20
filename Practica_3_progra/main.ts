@@ -29,13 +29,13 @@ const app = express();
 app.use(express.json());
 app
   .post ("/cliente", addCliente)
-  .delete("/cliente", deleteCliente)
-  .put("/cliente", enviar_dinero)
-  .put("/cliente", ingresar_dinero)
+  .delete("/cliente/:_id", deleteCliente)
+  .put("/cliente/:id1/:id2", enviar_dinero)
+  .put("/cliente/:id", ingresar_dinero)
   .post("/hipoteca", addHipoteca)
-  .put("/hipoteca", amortizar)
+  .put("/hipoteca/:id_hipoteca", amortizar)
   .post("/gestor", addGestor)
-  .put("/hipotecas", asignar_gestor)
+  .put("/asignar/:_id", asignar_gestor)
 
 app.listen(3000, () => {
   console.log("Server listening on port 3000");

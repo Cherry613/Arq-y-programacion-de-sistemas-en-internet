@@ -23,16 +23,20 @@ const enviar_dinero = async (req: Request, res: Response) => {
 
       const dinero_emisor = emisor.dinero - dinero;
       const dinero_receptor = receptor.dinero + dinero;
+      const mensaje = `Envio de dinero de ${emisor} a ${receptor}, cantidad: ${dinero}`;
+      emisor.movimientos.push(mensaje);
+      receptor.movimientos.push(mensaje);
+
 
       const updated_1= await ClienteModel.findOneAndUpdate(
         { _id : id1 },
-        { dinero: dinero_emisor },
+        { dinero: dinero_emisor, movimientos: emisor.movimientos },
         { new: true }
       ).exec();
 
       const updated_2= await ClienteModel.findOneAndUpdate(
         { _id : id2 },
-        { dinero: dinero_receptor },
+        { dinero: dinero_receptor, movimientos: receptor.movimientos },
         { new: true }
       ).exec();
   
@@ -40,6 +44,8 @@ const enviar_dinero = async (req: Request, res: Response) => {
         res.status(404).send("No se ha enviado el dinero");
         return;
       }
+
+      res.status(200).send("Dinero enviado");
 
     } catch (error) {
       res.status(500).send(error.message);
