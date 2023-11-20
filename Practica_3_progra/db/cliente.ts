@@ -7,10 +7,10 @@ const clienteSchema = new Schema(
   {
     dni: {type: String, required: true},
     nombre: { type: String, required: true},
-    dinero: { type: Number, required: true, default: 0},
+    dinero: { type: Number, required: false, default: 0},
     id_gestor: {type: String, requited: false, default: ""},
-    hipotecas: { type: [String], required: false},
-    movimientos: { type: [String], required: false} 
+    hipotecas: { type: [String], required: false, default: []},
+    movimientos: { type: [String], required: false, default: []} 
   },
   { timestamps: true }
 );

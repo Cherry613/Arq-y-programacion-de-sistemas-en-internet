@@ -3,7 +3,7 @@ import GestorModel from "../db/gestor.ts";
 
 const addGestor = async (req: Request, res: Response) => {
   try {
-  const { nombre, dni, clientes } = req.body;
+  const { nombre, dni} = req.body;
 
   //comprobar que no falten parámetros
     if (!nombre || !dni) {
@@ -18,11 +18,11 @@ const addGestor = async (req: Request, res: Response) => {
       return;
     }
     
-    const newGestor = new GestorModel({ nombre, dni, clientes});
+    const newGestor = new GestorModel({ nombre, dni });
     await newGestor.save();
 
     res.status(200).send({
-      name: newGestor.nombre,
+      nombre: newGestor.nombre,
       dni: newGestor.dni,
       clientes: newGestor.clientes,
       id: newGestor._id.toString(),

@@ -37,6 +37,14 @@ const addHipoteca = async (req: Request, res: Response) => {
     const newHipoteca = new HipotecaModel({importe_total, id_cliente, id_gestor});
     await newHipoteca.save();
 
+    //darle la hipoteca al cliente
+    clienteExists.hipotecas.push(newHipoteca._id);
+    await ClienteModel.findOneAndUpdate(
+      { _id: id_cliente},
+      { hipotecas: clienteExists.hipotecas},
+      { new: false}
+    ).exec();
+
     res.status(200).send({
       importe: newHipoteca.importe_total,
       cuotas: newHipoteca.cuotas,

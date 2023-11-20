@@ -3,7 +3,7 @@ import mongoose from "npm:mongoose@7.6.3";
 
 import addCliente from "./resolvers/addCliente.ts";
 import deleteCliente from "./resolvers/deleteClients.ts";
-import enviar_dinero from "./resolvers/Enviar_dinero.ts";
+import enviar_dinero from "./resolvers/enviar_dinero.ts";
 import ingresar_dinero from "./resolvers/Ingresar_dinero.ts";
 import addHipoteca from "./resolvers/addHipoteca.ts";
 import amortizar from "./resolvers/Amortizar_hipoteca.ts";

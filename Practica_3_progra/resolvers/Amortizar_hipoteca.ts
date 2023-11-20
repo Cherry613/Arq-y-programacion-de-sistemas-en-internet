@@ -1,41 +1,42 @@
-//update
-
 import { Request, Response } from "npm:express@4.18.2";
-import ClienteModel from "../db/cliente.ts";
+
 import HipotecaModel from "../db/hipoteca.ts";
-
-// buscar el id del cliente
-// comprobar el total de la hipoteca
-// calcular cuanto es la mensualidad (total/20)
-// comprobar el dinero del cliente
-// restar dienro al cliente
-// restar dinero a la hipoteca
-// actualizar historial cliente
-
-//si la hipoteca esta pagada del todo -> borrarla del cliente
+import ClienteModel from "../db/cliente.ts";
 
 const amortizar = async (req: Request, res: Response) => {
     try {
-      const { id_cliente, id_hipoteca } = req.params;
+      const {id_hipoteca } = req.params;
   
-      //comprobar que exiten esos clientes
-      const cliente= await ClienteModel.findOne({ _id : id_cliente }).exec();
+      //comprobar que exite y la hipoteca
       const hipoteca= await HipotecaModel.findOne({ _id : id_hipoteca }).exec();
-      if (!cliente || !hipoteca) {
-        res.status(404).send("El cliente, la hipoteca o ambos no existe(n)");
+      if(!hipoteca){
+        res.status(404).send("No se ha encontrado la hipoteca");
+        return;
+      }
+
+      const cliente= await ClienteModel.findOne({ _id : hipoteca.id_cliente }).exec();
+      //al crear una hipoteca ya se comprueba que el cliente exista, aqui no haria falta aunque salga en rojo es solo un warning
+      if(!cliente){
+        res.status(404).send("No se ha encontrado el cliente");
         return;
       }
 
       //calculamos cuanto es la mensualidad, el dinero que le queda al cliente, lo que queda por pagar a la hipoteca y las cuotas restantes
       const mensualidad = hipoteca.importe_total / hipoteca.cuotas;
 
+      //comprobar que el cliente puede pagar la hipoteca
+      if(cliente.dinero < mensualidad){
+        res.status(404).send("No tiene suficiente dinero para pagar la hipoteca");
+        return;
+      }
+
       const dinero_cliente = cliente.dinero - mensualidad;
-      const total_hipoteca = hipoteca.importe_total - dinero_cliente;
+      const total_hipoteca = hipoteca.importe_total - mensualidad;
       const cuotas_restantes = hipoteca.cuotas -1;
 
       //actualizamos el dinero que le queda al cliente despues de pagar la hipoteca
       const updated_1= await ClienteModel.findOneAndUpdate(
-        { _id : id_cliente },
+        { _id : cliente._id },
         { dinero: dinero_cliente },
         { new: true }
       ).exec();
@@ -51,7 +52,7 @@ const amortizar = async (req: Request, res: Response) => {
         const indice_hip = cliente.hipotecas.indexOf(id_hipoteca);  //buscamos esa hipoteca en el array de hipotecas de nuestro cliente
         cliente.hipotecas.splice(indice_hip,1);                     //borramos la hipoteca
         const update_cliente = await ClienteModel.findOneAndUpdate( //actualizamos el cliente para que no tenga esa hipoteca en su array
-            {_id : id_cliente},
+            {_id : cliente._id},
             {hipotecas : cliente.hipotecas},
             {new: true},
         ).exec();

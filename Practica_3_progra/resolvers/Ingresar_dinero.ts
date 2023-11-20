@@ -1,11 +1,6 @@
-//update
 import { Request, Response } from "npm:express@4.18.2";
-import ClienteModel from "../db/cliente.ts";
 
-//encontrar cliente con el id 
-//comprobar q existe el cliente
-//sumar el dinero al cliente
-//actualizar el historial dle cliente
+import ClienteModel from "../db/cliente.ts";
 
 const ingresar_dinero = async (req: Request, res: Response) => {
     try {
@@ -19,15 +14,16 @@ const ingresar_dinero = async (req: Request, res: Response) => {
         return;
       }
 
-      //comprobar que la cantidad de dinero que quiero ingresarle no es negativa
-      if(dinero < 0){
-        res.status(400).send("No puedes ingresar una cantidad de dinero negativa");
+      //comprobar que la cantidad de dinero que quiero ingresarle no es negativa o igual a 0
+      if(dinero <= 0){
+        res.status(400).send("No puedes ingresar una cantidad de dinero negativa o igual a 0");
         return;
       }
+      const dinero_actualizado = clienteExists.dinero + dinero;
 
       const updated = await ClienteModel.findOneAndUpdate(
         { _id : id },
-        { dinero: dinero },
+        { dinero: dinero_actualizado },
         { new: true }
       ).exec();
   

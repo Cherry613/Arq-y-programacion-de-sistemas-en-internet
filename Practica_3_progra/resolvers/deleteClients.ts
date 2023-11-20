@@ -7,6 +7,7 @@ const deleteCliente = async (req: Request, res: Response) => {
   try {
     const { _id } = req.params;
 
+    //comprobar que exista el cliente y si le quedan hipotecas por pagar
     const cliente = await ClienteModel.findById({_id}).exec();
     if(!cliente){
       res.status(404).send("No se ha encontrado el cliente")
@@ -17,6 +18,7 @@ const deleteCliente = async (req: Request, res: Response) => {
       return;
     }
 
+    //borramos el cliente
     const borrado = await ClienteModel.deleteOne({ _id }).exec();
     if (borrado.deletedCount === 0) {
       res.status(404).send("Cliente no borrado");
@@ -34,19 +36,23 @@ const deleteCliente = async (req: Request, res: Response) => {
     const gestor = await GestorModel.findOne({ _id: cliente.id_gestor }).exec();  //cogemos el gestor
     if(gestor){
       const posicionEliminar = gestor.clientes.indexOf(_id);  //buscamos al cliente en el array del gestor
-      //const cliente_gestor = gestor.clientes.find(elem => elem === _id); //esto estaía bien(???? ese dni es del gestor o del cliente xd)
+
       if(posicionEliminar !== -1){  //en caso de no haber encontrado al cliente, indexOf devolverá -1
         gestor.clientes.splice(posicionEliminar, 1);
-        await gestor.save();
+
+        await GestorModel.findOneAndUpdate(
+          {_id: cliente.id_gestor},
+          {clientes: gestor.clientes},
+          {new: false}
+        ).exec();
+        res.status(200).send("Cliente borrado y gestor actualizado");
+
       }
       else{
         res.status(404).send("El gestor no tiene ese cliente")
       }
     }
-    else{
-      res.status(200).send("Cliente borrado");
-    }
-
+    
   } catch (error) {
     res.status(404).send(error.message);
     return;

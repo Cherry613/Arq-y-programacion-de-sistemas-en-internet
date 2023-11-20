@@ -1,16 +1,13 @@
 import { Request, Response } from "npm:express@4.18.2";
+
 import ClienteModel from "../db/cliente.ts";
 import GestorModel from "../db/gestor.ts";
 
-//comrpobar q existe ese id del cliente y ek gestor
-// comprobar cuantos clientes tiene el gestor
-// añadir el cliente al gestor
 
 const asignar_gestor = async (req: Request, res: Response) => {
   try {
     const { _id } = req.params;
     const { id_gestor } = req.body;
-
 
     //comprobamos que el gestor existe y que no tenga 10 clientes ya
     const gestor = await GestorModel.findOne({ _id : id_gestor }).exec();

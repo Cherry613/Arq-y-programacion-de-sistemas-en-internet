@@ -6,8 +6,8 @@ const Schema = mongoose.Schema;
 const gestorSchema = new Schema(
   {
     nombre: { type: String, required: true},
-    dni: { type: Number, required: true},
-    clientes: { type: [String], required: false},
+    dni: { type: String, required: true},
+    clientes: { type: [String], required: false, default: []},
 
   },
   { timestamps: true }

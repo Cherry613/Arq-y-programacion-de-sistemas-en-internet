@@ -1,13 +1,6 @@
-//update
 import { Request, Response } from "npm:express@4.18.2";
-import ClienteModel from "../db/cliente.ts";
 
-// 2 id, el q envia y el q recive
-// comprobar que existan esos clientes
-// comprobar q el q envia tiene el saldo que intenta mandar al otro 
-// restar dinero del q envia
-// sumarlo al q recive
-// update del historial de movimientos(los 2)
+import ClienteModel from "../db/cliente.ts";
 
 const enviar_dinero = async (req: Request, res: Response) => {
     try {
@@ -22,9 +15,9 @@ const enviar_dinero = async (req: Request, res: Response) => {
         return;
       }
 
-      //comprobar que la cantidad de dinero que quiero mandar no es negativa
-      if(dinero < 0){
-        res.status(400).send("No puedes mandar una cantidad de dinero negativa");
+      //comprobar que la cantidad de dinero que quiero mandar no es negativa y no es 0
+      if(dinero <= 0){
+        res.status(400).send("No puedes mandar una cantidad de dinero negativa o igual a 0");
         return;
       }
 
@@ -38,7 +31,7 @@ const enviar_dinero = async (req: Request, res: Response) => {
       ).exec();
 
       const updated_2= await ClienteModel.findOneAndUpdate(
-        { _id : id1 },
+        { _id : id2 },
         { dinero: dinero_receptor },
         { new: true }
       ).exec();
