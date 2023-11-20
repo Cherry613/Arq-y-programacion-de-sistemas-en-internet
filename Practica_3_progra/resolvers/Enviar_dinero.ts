@@ -1,0 +1,58 @@
+//update
+import { Request, Response } from "npm:express@4.18.2";
+import ClienteModel from "../db/cliente.ts";
+
+// 2 id, el q envia y el q recive
+// comprobar que existan esos clientes
+// comprobar q el q envia tiene el saldo que intenta mandar al otro 
+// restar dinero del q envia
+// sumarlo al q recive
+// update del historial de movimientos(los 2)
+
+const enviar_dinero = async (req: Request, res: Response) => {
+    try {
+      const { id1, id2 } = req.params;
+      const { dinero } = req.body;
+  
+      //comprobar que exiten esos clientes
+      const emisor= await ClienteModel.findOne({ _id : id1 }).exec();
+      const receptor= await ClienteModel.findOne({ _id : id2 }).exec();
+      if (!emisor || !receptor) {
+        res.status(404).send("Algun cliente o ambos no existe(n)");
+        return;
+      }
+
+      //comprobar que la cantidad de dinero que quiero mandar no es negativa
+      if(dinero < 0){
+        res.status(400).send("No puedes mandar una cantidad de dinero negativa");
+        return;
+      }
+
+      const dinero_emisor = emisor.dinero - dinero;
+      const dinero_receptor = receptor.dinero + dinero;
+
+      const updated_1= await ClienteModel.findOneAndUpdate(
+        { _id : id1 },
+        { dinero: dinero_emisor },
+        { new: true }
+      ).exec();
+
+      const updated_2= await ClienteModel.findOneAndUpdate(
+        { _id : id1 },
+        { dinero: dinero_receptor },
+        { new: true }
+      ).exec();
+  
+      if (!updated_1 || !updated_2) {   
+        res.status(404).send("No se ha enviado el dinero");
+        return;
+      }
+
+    } catch (error) {
+      res.status(500).send(error.message);
+      return;
+    }
+  };
+  
+  export default enviar_dinero;
+
