@@ -34,7 +34,7 @@ const amortizar = async (req: Request, res: Response) => {
       const total_hipoteca = hipoteca.importe_total - mensualidad;
       const cuotas_restantes = hipoteca.cuotas -1;
 
-      const mensaje = `Pago de ${mensualidad} para la hipoteca ${id_hipoteca}`;
+      const mensaje = `Pago de ${mensualidad} para la hipoteca ${String(id_hipoteca)}`;
       cliente.movimientos.push(mensaje);
 
       //actualizamos el dinero que le queda al cliente despues de pagar la hipoteca

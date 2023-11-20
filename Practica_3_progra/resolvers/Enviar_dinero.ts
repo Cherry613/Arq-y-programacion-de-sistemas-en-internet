@@ -23,7 +23,7 @@ const enviar_dinero = async (req: Request, res: Response) => {
 
       const dinero_emisor = emisor.dinero - dinero;
       const dinero_receptor = receptor.dinero + dinero;
-      const mensaje = `Envio de dinero de ${emisor} a ${receptor}, cantidad: ${dinero}`;
+      const mensaje = `Envio de dinero de ${String(id1)} a ${String(id2)}, cantidad: ${dinero}`;
       emisor.movimientos.push(mensaje);
       receptor.movimientos.push(mensaje);
 

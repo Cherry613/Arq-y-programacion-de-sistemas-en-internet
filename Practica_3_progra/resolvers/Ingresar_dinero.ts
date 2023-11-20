@@ -21,7 +21,7 @@ const ingresar_dinero = async (req: Request, res: Response) => {
       }
 
       const dinero_actualizado = clienteExists.dinero + dinero;
-      const mensaje = `Ingreso de ${dinero} al cliente ${clienteExists}`;
+      const mensaje = `Ingreso de ${dinero} al cliente ${String(id)}`;
       clienteExists.movimientos.push(mensaje);
 
       const updated = await ClienteModel.findOneAndUpdate(
@@ -35,15 +35,6 @@ const ingresar_dinero = async (req: Request, res: Response) => {
         return;
       }
   
-      res.status(200).send({
-        dni: updated.dni,
-        nombre: updated.nombre,
-        dinero: updated.dinero,
-        id_gestor: updated.id_gestor,
-        hipotecas: updated.hipotecas,
-        movimientos: updated.movimientos,
-        id: updated._id.toString(),
-      });
     } catch (error) {
       res.status(500).send(error.message);
       return;
