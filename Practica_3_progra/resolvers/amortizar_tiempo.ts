@@ -3,8 +3,9 @@ import ClienteModel from "../db/cliente.ts";
 
 setInterval(async ()=> {
     const hipotecas = await HipotecaModel.find().exec();
-    hipotecas.map(async (hipoteca) =>{
+    await hipotecas.reduce(async (prev, hipoteca) =>{   //elegimos reduce para que sea en serie, no en paralelo
 
+        await prev; //que espere a que se haya pagado la cuota de la anterior hipoteca
         const mensualidad = hipoteca.importe_total / hipoteca.cuotas;
 
         const cliente = await ClienteModel.findById(hipoteca.id_cliente);
@@ -31,33 +32,33 @@ setInterval(async ()=> {
         //si las cuotas restantes de la hipoteca son 0, habremos pagado la hipoteca
         if(cuotas_restantes === 0){
             const borrado = await HipotecaModel.deleteOne({ _id : hipoteca._id}).exec();    //borramos la hipoteca de la base de datos
-        if (borrado.deletedCount === 0) {
-          return;
-        }
+            if (borrado.deletedCount === 0) {
+                return;
+            }
         
-        const indice_hip = cliente.hipotecas.indexOf(hipoteca._id);  //buscamos esa hipoteca en el array de hipotecas de nuestro cliente
-        cliente.hipotecas.splice(indice_hip, 1);                     //borramos la hipoteca
-        const update_cliente = await ClienteModel.findOneAndUpdate( //actualizamos el cliente para que no tenga esa hipoteca en su array
-            {_id : cliente._id},
-            {hipotecas : cliente.hipotecas},
-            {new: true},
-        ).exec();
+            const indice_hip = cliente.hipotecas.indexOf(hipoteca._id);  //buscamos esa hipoteca en el array de hipotecas de nuestro cliente
+            cliente.hipotecas.splice(indice_hip, 1);                     //borramos la hipoteca
+            const update_cliente = await ClienteModel.findOneAndUpdate( //actualizamos el cliente para que no tenga esa hipoteca en su array
+                {_id : cliente._id},
+                {hipotecas : cliente.hipotecas},
+                {new: true},
+            ).exec();
         
-        if(!update_cliente){
-            return;
-        }
-
-        //actualizamos la hipoteca con el nuevo importe y las cuotas restantes
-        const updated_2= await HipotecaModel.findOneAndUpdate(    
-            { _id : hipoteca._id },
-            { importe_total: total_hipoteca, cuotas: cuotas_restantes},
-            { new: true }
-        ).exec();
+            if(!update_cliente){
+                return;
+            }
+            
+        } else {
+            //actualizamos la hipoteca con el nuevo importe y las cuotas restantes
+            const updated_2= await HipotecaModel.findOneAndUpdate(    
+                { _id : hipoteca._id },
+                { importe_total: total_hipoteca, cuotas: cuotas_restantes},
+                { new: true }
+            ).exec();
   
-        if (!updated_1 || !updated_2) {   
-            return;
+             if (!updated_1 || !updated_2) {   
+                return;
+            }
         }
-    }
-
-  })
+    }, Promise.resolve())
 }, 0.5*60*1000)
