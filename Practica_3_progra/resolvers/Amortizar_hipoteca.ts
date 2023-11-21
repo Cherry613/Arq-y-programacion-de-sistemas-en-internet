@@ -15,7 +15,7 @@ const amortizar = async (req: Request, res: Response) => {
       }
 
       const cliente= await ClienteModel.findOne({ _id : hipoteca.id_cliente }).exec();
-      //al crear una hipoteca ya se comprueba que el cliente exista, aqui no haria falta aunque salga en rojo es solo un warning
+      //al crear una hipoteca ya se comprueba que el cliente exista aqui no haria falta, pero sin el if saltan errores en rojo porque dice que cliente podria ser null
       if(!cliente){
         res.status(404).send("No se ha encontrado el cliente");
         return;
@@ -53,7 +53,7 @@ const amortizar = async (req: Request, res: Response) => {
         }
         
         const indice_hip = cliente.hipotecas.indexOf(id_hipoteca);  //buscamos esa hipoteca en el array de hipotecas de nuestro cliente
-        cliente.hipotecas.splice(indice_hip,1);                     //borramos la hipoteca
+        cliente.hipotecas.splice(indice_hip,1);                     //borramos la hipocteca
         const update_cliente = await ClienteModel.findOneAndUpdate( //actualizamos el cliente para que no tenga esa hipoteca en su array
             {_id : cliente._id},
             {hipotecas : cliente.hipotecas},

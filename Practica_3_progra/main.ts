@@ -9,6 +9,7 @@ import addHipoteca from "./resolvers/addHipoteca.ts";
 import amortizar from "./resolvers/Amortizar_hipoteca.ts";
 import addGestor from "./resolvers/addGestor.ts";
 import asignar_gestor from "./resolvers/asignar_gestor.ts";
+//import "./resolvers/ingresar_tiempo.ts";
 
 import { load } from "https://deno.land/std@0.204.0/dotenv/mod.ts";
 const env = await load();
