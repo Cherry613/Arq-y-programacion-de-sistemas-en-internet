@@ -6,24 +6,26 @@ const addCliente = async (req: Request, res: Response) => {
   try {
     const {dni, nombre, dinero, id_gestor /*hipotecas, movimientos*/} = req.body;
     
-    //comprobar que no falten parámetros
+    //comprobar que no falten parámetros.
     if (!nombre || !dni) {
       res.status(400).send("El cliente necesita un nombre y dni");
       return;
     }
 
-    //comprobamos que no estemos intentando añadir un cliente que ya este
+    //comprobamos que no estemos intentando añadir un cliente que ya esté.
     const alreadyExists = await ClienteModel.findOne({ dni }).exec();
     if (alreadyExists) {
       res.status(400).send("Ese cliente ya existe");
       return;
     }
 
+    //comprobamos que el cliente tenga dinero y que no sea una cantidad negativa.
     if(dinero && dinero < 0){
       res.status(404).send("No puedes crear una cuenta con dinero negativo");
       return;
     }
 
+    //comprobar que el gestor que le estamos intentando asignar existe.
     if(id_gestor){
       const gestorExists = await GestorModel.findOne({_id: id_gestor}).exec();
       if(!gestorExists){
@@ -51,12 +53,3 @@ const addCliente = async (req: Request, res: Response) => {
 };
 
 export default addCliente;
-
-/*
-  dni: {type: String, required: true}
-  name: { type: String, required: true},
-  dinero: { type: Number, required: true},
-  id_gestor: {type: String, requited: true},
-  hipotecas: { type: [String], required: false},
-  movimientos: { type: [String], required: false},
-*/

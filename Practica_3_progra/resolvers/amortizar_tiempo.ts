@@ -6,8 +6,11 @@ setInterval(async ()=> {
     await hipotecas.reduce(async (prev, hipoteca) =>{   //elegimos reduce para que sea en serie, no en paralelo
 
         await prev; //que espere a que se haya pagado la cuota de la anterior hipoteca
+
+        //calculamos cuánto es la mensualidad, el dinero que le queda al cliente, lo que queda por pagar a la hipoteca, las cuotas restantes y creamos el mensaje para el historial del usuario
         const mensualidad = hipoteca.importe_total / hipoteca.cuotas;
 
+        //comprobar que el cliente puede pagar la hipoteca
         const cliente = await ClienteModel.findById(hipoteca.id_cliente);
         if(!cliente){
             return;
@@ -22,7 +25,7 @@ setInterval(async ()=> {
         const mensaje = `Pago de ${mensualidad} para la hipoteca ${String(hipoteca._id)}`;
         cliente.movimientos.push(mensaje);
 
-        //actualizamos el dinero que le queda al cliente despues de pagar la hipoteca
+        //actualizamos el dinero que le queda al cliente después de pagar la hipoteca y su historial de movimientos
         const updated_1= await ClienteModel.findOneAndUpdate(
             { _id : cliente._id },
             { dinero: dinero_cliente, movimientos: cliente.movimientos },
@@ -61,4 +64,4 @@ setInterval(async ()=> {
             }
         }
     }, Promise.resolve())
-}, 0.5*60*1000)
+}, 5*60*1000)

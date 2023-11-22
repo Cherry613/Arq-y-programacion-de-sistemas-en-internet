@@ -14,14 +14,14 @@ const amortizar = async (req: Request, res: Response) => {
         return;
       }
 
+      //buscamos al cliente asociado a esa hipoteca
       const cliente= await ClienteModel.findOne({ _id : hipoteca.id_cliente }).exec();
-      //al crear una hipoteca ya se comprueba que el cliente exista aqui no haria falta, pero sin el if saltan errores en rojo porque dice que cliente podria ser null
       if(!cliente){
         res.status(404).send("No se ha encontrado el cliente");
         return;
       }
 
-      //calculamos cuanto es la mensualidad, el dinero que le queda al cliente, lo que queda por pagar a la hipoteca y las cuotas restantes
+      //calculamos cuánto es la mensualidad, el dinero que le queda al cliente, lo que queda por pagar a la hipoteca, las cuotas restantes y creamos el mensaje para el historial del usuario
       const mensualidad = hipoteca.importe_total / hipoteca.cuotas;
 
       //comprobar que el cliente puede pagar la hipoteca
@@ -37,7 +37,7 @@ const amortizar = async (req: Request, res: Response) => {
       const mensaje = `Pago de ${mensualidad} para la hipoteca ${String(id_hipoteca)}`;
       cliente.movimientos.push(mensaje);
 
-      //actualizamos el dinero que le queda al cliente despues de pagar la hipoteca
+      //actualizamos el dinero que le queda al cliente después de pagar la hipoteca y su historial de movimientos
       const updated_1= await ClienteModel.findOneAndUpdate(
         { _id : cliente._id },
         { dinero: dinero_cliente, movimientos: cliente.movimientos },
@@ -53,7 +53,7 @@ const amortizar = async (req: Request, res: Response) => {
         }
         
         const indice_hip = cliente.hipotecas.indexOf(id_hipoteca);  //buscamos esa hipoteca en el array de hipotecas de nuestro cliente
-        cliente.hipotecas.splice(indice_hip,1);                     //borramos la hipocteca
+        cliente.hipotecas.splice(indice_hip,1);                     //borramos la hipoteca
         const update_cliente = await ClienteModel.findOneAndUpdate( //actualizamos el cliente para que no tenga esa hipoteca en su array
             {_id : cliente._id},
             {hipotecas : cliente.hipotecas},
@@ -64,7 +64,7 @@ const amortizar = async (req: Request, res: Response) => {
             res.status(404).send("No se pudo borrar la hipoteca del cliente");
         }
 
-        res.status(200).send("Bieeeeen has pagado la hipoteca ^^");
+        res.status(200).send("Enhorabuena, has pagado la hipoteca.");
         return;
       }
 

@@ -26,20 +26,21 @@ const deleteCliente = async (req: Request, res: Response) => {
     }
 
     //despues de borrar al cliente, borrarlo del gestor
-    //si no tiene gestor
+    //En caso de que no tenga gestor
     if(cliente.id_gestor === ""){ 
       res.status(200).send("Cliente borrado");
       return;
     }
     
-    //si tiene gestor, borramos el cliente del array de clientes del gestor
+    //En caso de que sí tenga gestor, borramos el cliente del array de clientes del gestor
     const gestor = await GestorModel.findOne({ _id: cliente.id_gestor }).exec();  //cogemos el gestor
     if(gestor){
       const posicionEliminar = gestor.clientes.indexOf(_id);  //buscamos al cliente en el array del gestor
 
       if(posicionEliminar !== -1){  //en caso de no haber encontrado al cliente, indexOf devolverá -1
-        gestor.clientes.splice(posicionEliminar, 1);
+        gestor.clientes.splice(posicionEliminar, 1);  //eliminamos ese cliente del array del gestor
 
+        //actualizamos el gestor
         await GestorModel.findOneAndUpdate(
           {_id: cliente.id_gestor},
           {clientes: gestor.clientes},

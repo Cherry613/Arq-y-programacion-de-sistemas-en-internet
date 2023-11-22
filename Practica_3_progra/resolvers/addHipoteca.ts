@@ -10,7 +10,7 @@ const addHipoteca = async (req: Request, res: Response) => {
       return;
     }
 
-    //la hipoteca no puede superar el millon de euros ni ser negativa
+    //la hipoteca no puede superar el millon de euros ni ser negativa.
     if(importe_total > 1000000){
       res.status(400).send("La hipoteca no puede superar el millon de euros");
       return;
@@ -20,14 +20,12 @@ const addHipoteca = async (req: Request, res: Response) => {
       return;
     }
     
-    //no podremos crear una hipoteca si no existen el cliente ni el gestor antes
+    //no podremos crear una hipoteca si no existen el cliente ni el gestor antes.
     const clienteExists = await ClienteModel.findOne({ _id: id_cliente }).exec();
     if (!clienteExists) {
       res.status(404).send("Ese cliente no existe");
       return;
     }
-
-
     if(clienteExists.id_gestor === ""){
       res.status(400).send("El cliente no tiene gestor");
       return;
@@ -58,10 +56,3 @@ const addHipoteca = async (req: Request, res: Response) => {
 };
 
 export default addHipoteca;
-
-/*
-  importe_total: {type: Number, required: true},
-  cuotas: {type: Number, required: true, default: 20},
-  id_cliente: { type: String, required: true },
-  id_gestor: { type: String, required: true },
-*/

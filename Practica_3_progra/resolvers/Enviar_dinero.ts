@@ -15,19 +15,20 @@ const enviar_dinero = async (req: Request, res: Response) => {
         return;
       }
 
-      //comprobar que la cantidad de dinero que quiero mandar no es negativa y no es 0
+      //comprobar que la cantidad de dinero que quiero mandar no es negativa ni igual a 0.
       if(dinero <= 0){
         res.status(400).send("No puedes mandar una cantidad de dinero negativa o igual a 0");
         return;
       }
 
+      //calculamos como va a quedar el dinero del emisor y del receptor además del mensaje que se añadirá al historial de ambos clientes
       const dinero_emisor = emisor.dinero - dinero;
       const dinero_receptor = receptor.dinero + dinero;
       const mensaje = `Envio de dinero de ${String(id1)} a ${String(id2)}, cantidad: ${dinero}`;
       emisor.movimientos.push(mensaje);
       receptor.movimientos.push(mensaje);
 
-
+      //actualizamos a los dos clientes
       const updated_1= await ClienteModel.findOneAndUpdate(
         { _id : id1 },
         { dinero: dinero_emisor, movimientos: emisor.movimientos },

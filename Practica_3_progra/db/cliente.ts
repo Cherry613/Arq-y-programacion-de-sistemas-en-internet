@@ -18,13 +18,3 @@ const clienteSchema = new Schema(
 export type ClienteModelType = mongoose.Document & Omit<Cliente, "id">;
 
 export default mongoose.model<ClienteModelType>("Cliente", clienteSchema);
-
-/*
-  dni: string;
-  name: string;
-  dinero: number;
-  id_gestor: string;
-  hipotecas: string[];
-  movimientos: string[];
-   
-*/

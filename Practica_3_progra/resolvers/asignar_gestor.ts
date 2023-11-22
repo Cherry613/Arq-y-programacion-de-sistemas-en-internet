@@ -20,7 +20,7 @@ const asignar_gestor = async (req: Request, res: Response) => {
       return;
     }
 
-    //comprobamos que el cliente existe y si ya tiene un gestor
+    //comprobamos que el cliente exista, la posibilidad de que el cliente ya tenga un gestor asignado y la posibilidad de que este cliente ya esté asignado a este gestor
     const cliente = await ClienteModel.findOne({ _id}).exec();
     if (!cliente) {
       res.status(404).send("Ese cliente no existe");
@@ -35,9 +35,8 @@ const asignar_gestor = async (req: Request, res: Response) => {
       return;
     }
 
-    // añadimos el cliente al array de clientes del gestor
+    //añadimos el cliente al array de clientes del gestor y actualizamos el cliente
     gestor.clientes.push(cliente._id);
-
     const updated_cliente = await ClienteModel.findOneAndUpdate(
       { _id : _id },
       { id_gestor: gestor._id },
@@ -49,6 +48,7 @@ const asignar_gestor = async (req: Request, res: Response) => {
       return;
     }
 
+    //actualizamos el gestor para añadir el cliente a su array de clientes
     const updated_gestor = await GestorModel.findOneAndUpdate(
       { _id: id_gestor },
       { clientes: gestor.clientes },

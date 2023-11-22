@@ -5,13 +5,13 @@ const addGestor = async (req: Request, res: Response) => {
   try {
   const { nombre, dni} = req.body;
 
-  //comprobar que no falten parámetros
+  //comprobar que no falten parámetros.
     if (!nombre || !dni) {
       res.status(400).send("Se necesita un nombre y un dni");
       return;
     }
 
-    //no añadiremos un gestor que ya exista en la base de datos
+    //no añadiremos un gestor que ya exista en la base de datos.
     const alreadyExists = await GestorModel.findOne({ dni }).exec();
     if (alreadyExists) {
       res.status(400).send("Ese gestor ya existe");
@@ -34,9 +34,3 @@ const addGestor = async (req: Request, res: Response) => {
 };
 
 export default addGestor;
-
-/*
-  nombre: { type: String, required: true},
-  dni: { type: Number, required: true},
-  clientes: { type: [String], required: false},
-*/  

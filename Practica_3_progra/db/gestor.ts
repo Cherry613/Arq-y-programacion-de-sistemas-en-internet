@@ -16,9 +16,3 @@ const gestorSchema = new Schema(
 export type GestorModelType = mongoose.Document & Omit<Gestor, "id">;
 
 export default mongoose.model<GestorModelType>("Gestor", gestorSchema);
-
-/*
-  name: string;
-  dni: string;
-  clientes: string[]; //max 10 
-*/

@@ -17,10 +17,3 @@ const hipotecaSchema = new Schema(
 export type hipotecaModelType = mongoose.Document & Omit<Hipoteca, "id">;
 
 export default mongoose.model<hipotecaModelType>("Hipoteca", hipotecaSchema);
-
-/*
-  importe_total: number;
-  cuotas: number;
-  id_cliente: string;
-  id_gestor: string;
-*/

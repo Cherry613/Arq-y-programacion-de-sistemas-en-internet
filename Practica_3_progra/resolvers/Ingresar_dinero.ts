@@ -20,10 +20,12 @@ const ingresar_dinero = async (req: Request, res: Response) => {
         return;
       }
 
+      //calculamos como se quedará su variable dinero y el mensaje que se añadirá a su historial de movimientos
       const dinero_actualizado = clienteExists.dinero + dinero;
       const mensaje = `Ingreso de ${dinero} al cliente ${String(id)}`;
       clienteExists.movimientos.push(mensaje);
 
+      //actualizar al cliente
       const updated = await ClienteModel.findOneAndUpdate(
         { _id : id },
         { dinero: dinero_actualizado, movimientos: clienteExists.movimientos },
