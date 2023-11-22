@@ -1,4 +1,4 @@
-import mongoose from "npm:mongoose@7.6.3";
+import mongoose from "npm:mongoose@8.0.0";
 import { Gestor } from "../types.ts";
 
 const Schema = mongoose.Schema;

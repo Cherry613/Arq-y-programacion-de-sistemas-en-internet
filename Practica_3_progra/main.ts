@@ -1,5 +1,5 @@
 import express from "npm:express@4.18.2";
-import mongoose from "npm:mongoose@7.6.3";
+import mongoose from "npm:mongoose@8.0.0";
 
 import addCliente from "./resolvers/addCliente.ts";
 import deleteCliente from "./resolvers/deleteClients.ts";
