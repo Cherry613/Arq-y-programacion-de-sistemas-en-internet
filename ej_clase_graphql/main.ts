@@ -48,7 +48,7 @@ const resolvers = {
       const petsModel = await PetModel.find().exec();  //este find devuelve un petmodeltype 
       const pets: Pet[] = petsModel.map((pet) => {
         return{
-          id: pet.id,
+          id: pet._id.toString(),
           name: pet.name,
           breed: pet.breed,
         }
@@ -62,7 +62,7 @@ const resolvers = {
         throw new GraphQLError (`No se ha encontrado ninguna mascota con ese ${args.id}`);
       }
       return{
-        id: pet._id.to_String(),
+        id: pet._id.toString(),
         name: pet.name,
         breed: pet.breed,
       }
@@ -77,7 +77,7 @@ const resolvers = {
         }
         const pet = petModel.map((pet)=> {
           return{
-            id: pet._id.to_String(),
+            id: pet._id.toString(),
             name: pet.name,
             breed: pet.breed,
           }
@@ -114,7 +114,6 @@ const resolvers = {
         if (!pet) {
           throw new GraphQLError(`No pet found with id ${args.id}`);
         }
-
         return pet;
       },
     },
