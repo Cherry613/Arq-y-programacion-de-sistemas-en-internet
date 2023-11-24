@@ -67,9 +67,9 @@ const resolvers = {
         return pet;
       },
 
-      addPet: (_: unknown, args: { name: string; breed: string }) => {
+      addPet: async (_: unknown, args: { name: string; breed: string }) => {
         const newPet =  new PetModel({ name: args.name, breed: args.breed})
-        newPet.save();
+        await newPet.save();
 
         return{
           id: newPet.id,
