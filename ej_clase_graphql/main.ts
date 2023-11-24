@@ -17,7 +17,7 @@ const typeDefs = `#graphql
   }
   type Mutation {
     filterPet(breed: String!): [Pet!]!
-    addPet(id: ID!, name: String!, breed: String!): Pet!
+    addPet( name: String!, breed: String!): Pet!
     deletePet(id: ID!): Pet!
     updatePet(id: ID!, name: String!, breed: String!): Pet!
   }
@@ -67,8 +67,8 @@ const resolvers = {
         return pet;
       },
 
-      addPet: (_: unknown, args: { id: string; name: string; breed: string }) => {
-        const newPet =  new PetModel({id: args.id, name: args.name, breed: args.breed})
+      addPet: (_: unknown, args: { name: string; breed: string }) => {
+        const newPet =  new PetModel({ name: args.name, breed: args.breed})
         newPet.save();
 
         return{
