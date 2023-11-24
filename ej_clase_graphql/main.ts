@@ -16,11 +16,10 @@ const typeDefs = `#graphql
     pet(id: ID!): Pet!
   }
   type Mutation {
-    filterPet(breed: String!): Pet[]!
+    filterPet(breed: String!): [Pet!]!
     addPet(id: ID!, name: String!, breed: String!): Pet!
     deletePet(id: ID!): Pet!
     updatePet(id: ID!, name: String!, breed: String!): Pet!
-
   }
 `;
 
