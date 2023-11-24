@@ -48,7 +48,7 @@ const resolvers = {
       const petsModel = await PetModel.find().exec();  //este find devuelve un petmodeltype 
       const pets: Pet[] = petsModel.map((pet) => {
         return{
-          id: pet._id.to_String(),
+          id: pet.id,
           name: pet.name,
           breed: pet.breed,
         }
