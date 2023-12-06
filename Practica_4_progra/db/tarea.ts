@@ -2,24 +2,14 @@ import mongoose from "npm:mongoose@8.0.0";
 import { ESTADO, Tarea } from "../types.ts";
 import  EmpresaModel from "./empresa.ts";
 import  TrabajadorModel from "./trabajador.ts";
-import TareaModel from "./tarea.ts";
 
 const Schema = mongoose.Schema;
 
-/*const tareaSchema = new Schema( {
-    nombre: {type: String, required: true, lowercase: true, unique: true},
-    estado: {type: String, enum: ESTADO, required: false, default: ESTADO.TO_DO},
-    trabajador: {types: Schema.Types.ObjectId, required: true, ref: "Trabajadores", default: null}, //la tarea va a necesitar tanto un trabajador como una empresa pq no hay endpoint para asignarlas
-    empresa: {types: Schema.Types.ObjectId, required: true, ref: "Empresas", default: null}
-    },
-    { timestamps: true}
-);*/
-
 const tareaSchema = new Schema({
-      nombre: { type: String, required: true },
-      estado: { type: String, required: false, enum: ESTADO, default: ESTADO.TO_DO },
-      trabajador: { type: Schema.Types.ObjectId, required: true, ref: "Trabajadores" },
-      empresa: { type: Schema.Types.ObjectId, required: true, ref: "Empresas" },
+    nombre: { type: String, required: true },
+    estado: { type: String, required: false, enum: ESTADO, default: ESTADO.TO_DO },
+    trabajador: { type: Schema.Types.ObjectId, required: true, ref: "Trabajadores" },
+    empresa: { type: Schema.Types.ObjectId, required: true, ref: "Empresas" },
     },
     { timestamps: true },
 );
@@ -71,27 +61,16 @@ tareaSchema.post("save", async function (doc: TareaModelType) {
 })
 
 tareaSchema.post("findOneAndDelete", async function (doc: TareaModelType) {
-    //hecho con copias locales
-    /*const trabajador = await TrabajadorModel.findById(doc.trabajador).exec();
-    if(!trabajador) throw new Error (`No se encuentra ningun trabajador con el id ${doc.trabajador}`);
-    trabajador.tareas.splice(trabajador.tareas.indexOf(doc._id)); //buscamos la tarea q queremos borrar del array de trabajadores, cuando tengamos el indice hacemos splice ahi -> aka quitarlo
-    trabajador.save();  ///porq estabamos haciendo cosas en local, ahora lo guardamos en la bd
 
-    const empresa = await EmpresaModel.findById(doc.empresa).exec();
-    if(!empresa) throw new Error (`No se encuentra ninguna empresa con el id ${doc.empresa}`)
-    empresa.tareas.splice(empresa.tareas.indexOf(doc._id));     //lo mismo pero para empresas
-    empresa.save(); //ditto*/
-
-    //actualizando en la bbdd directamente
     await TrabajadorModel.findOneAndUpdate({_id: doc.trabajador}, {$pull: {tareas: doc._id}}).exec();
     await EmpresaModel.findOneAndUpdate({_id: doc.empresa}, {$pull: {tareas: doc._id }}).exec();
+
 })
 
 tareaSchema.post("findOneAndUpdate", async function (doc: TareaModelType) {
     try{//si el estado es closed -> borrar la tarea, borrar la tarea q tenga el mismo id q esta en el trabajador y en la empresa
         if(doc.estado === "CLOSED"){
-            //await TareaModel.deleteOne({_id: doc._id});
-            doc.deleteOne();
+            await doc.deleteOne();
             await TrabajadorModel.updateOne({_id: doc.trabajador},{$pull: {tareas: doc._id}});
             await EmpresaModel.updateOne({_id: doc.empresa}, {$pull: {tareas: doc._id}});
         }

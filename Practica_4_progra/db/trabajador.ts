@@ -1,18 +1,10 @@
 import mongoose from "npm:mongoose@8.0.0";
 import { Trabajador } from "../types.ts";
-import EmpresaModel, { EmpresaModelType } from "./empresa.ts";
+import EmpresaModel from "./empresa.ts";
 import TareaModel from "./tarea.ts";
 
 const Schema = mongoose.Schema;
 
-/*const trabajadorSchema = new Schema( {
-    nombre: {types: String, required: [true, "Se debe tener un nombre"]},
-    dni: {types: String, required: [true, "Se debe añadir un dni"], unique: true},
-    empresa: {types: Schema.Types.ObjectId, required: false, ref:"Empresas", default: null},
-    tareas: [{types: Schema.Types.ObjectId, required: false, ref:"Tareas", default: null}]   //max 10 tareas
-    },
-    {timestamps: true}
-)*/
 const trabajadorSchema = new Schema({
     nombre: { type: String, required: true },
     empresa: { type: Schema.Types.ObjectId, required: false, ref: "Empresas" },
@@ -53,12 +45,6 @@ trabajadorSchema.post("save", async function (doc: TrabajadorModelType) {
 })*/
 
 trabajadorSchema.post("findOneAndDelete", async function (doc: TrabajadorModelType){ 
-    /*
-    //borrar el trabajador de la empresa usando una copia local:
-    const empresa = await EmpresaModel.findById(doc.empresa).exec();    //cogemos la empresa del trabajador
-    if(!empresa) throw new Error (`No se encuentra ninguna empresa con el id ${doc.empresa}`);
-    empresa.trabajadores.splice(empresa.trabajadores.indexOf(doc._id)); //buscamos en el array de trabajadores de esa empresa para encontrar el trabajador q estamos borrando, cuando tengamos su indice hacemos splice ahi
-    empresa.save();  ///porq estabamos haciendo cosas en local, ahora lo guardamos en la bd*/
 
     //buscar las tareas cuyos ids se encuentren en el array de tareas del trabajador que se esta borando y ponerles el trabajador a null
     await TareaModel.updateMany({_id: {$in: doc.tareas}}, {trabajador: null}).exec();   

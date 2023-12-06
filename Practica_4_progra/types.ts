@@ -12,7 +12,6 @@ export type Empresa = {
 }
 
 export type Trabajador = {
-    dni: string
     nombre: string,
     empresa: Omit<Empresa, "trabajadores" | "tareas">,
     tareas: Array< Omit< Tarea, "trabajador" | "empresa" >> // max 10.

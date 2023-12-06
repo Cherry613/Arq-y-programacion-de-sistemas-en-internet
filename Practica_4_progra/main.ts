@@ -37,13 +37,13 @@ app
   .get("/business/:id", getBusinessID)  //DONE
   .get("/task/:id", getTareaID)  //DONE
   .delete("/worker/:id", deleteWorker)  //DONE ->revisar
-  .delete("/business/:id", deleteBusiness)  //DONE -> revisar
+  .delete("/business/:id", deleteBusiness)  //DONE -> sí
   .delete("/task/:id", deleteTask)  //DONE -> revisar
   .get("/worker", getWorkers) //DONE
   .get("/business", getBusiness)  //DONE 
   .get("/task", getTareas)  //DONE
   .post("/worker", addWorker)  //DONE -> revisar
-  .post("/business", addBusiness) //DONE -> revisar
+  .post("/business", addBusiness) //DONE -> si
   .post ("/task", addTask) //DONE -> revisar
   .put("/business/:id/fire/:workerID", )  //business/:id/fire/:workerId -> Deberá despedir de la empresa al trabajador que corresponde al id
   .put("/business/:id/hire/:workerID", )  //business/:id/hire/:workerId -> Deberá contratar de la empresa al trabajador que corresponde al id

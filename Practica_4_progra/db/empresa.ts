@@ -5,16 +5,7 @@ import TareaModel from "./tarea.ts";
 
 const Schema = mongoose.Schema;
 
-/*const empresaSchema = new Schema({
-    nombre: {type: String, required: [true, "Se debe incluir un nombre" ], lowercase: true, unique: true},   //se mostrará ese mensaje si no introducen nombre + lowecase pasa todo a minusculas para q no se puedan repetir nombres
-    trabajadores: [{types: Schema.Types.ObjectId, required: false, ref:"Trabajadores", default: null}], //las referencias a como se llaman en la base de datos (se pone en plural por defecto en mongo)
-    tareas: [{types: Schema.Types.ObjectId, required: false, ref:"Tareas", default: null}]
-    },
-    { timestamps: true }
-);*/
-
-const empresaSchema = new Schema(
-  {
+const empresaSchema = new Schema({
     nombre: { type: String, required: true },
     trabajadores: [{ type: Schema.Types.ObjectId, required: false, ref: "Trabajadores" },],
     tareas: [{ type: Schema.Types.ObjectId, required: false, ref: "Tareas" },],
@@ -53,16 +44,6 @@ empresaSchema.post("save", async function () {
 })
 
 empresaSchema.post("findOneAndDelete", async function (doc: EmpresaModelType) {
-    //antes de borrar la empresa en sí, borrar en los trabajadores de esa empresa el campo empresa (poner a null), 
-    //borrar en las tareas el campo empresa -> seria borrar el campo o la tarea en sí???
-    
-    //const empresaid = this.getQuery().get("_id");   //coge el id de la empresa que se está borrando
-    //const empresa  = await EmpresaModel.findById(doc._id).exec(); //buscar la empresa que tenga el id 
-    //if(!empresa) throw new Error ("No existe la empresa");
-
-    /*await Promise.all(empresa.trabajadores.map(async (id: string) => {     
-        await TrabajadorModel.findOneAndUpdate({_id: id}, {empresa: null}).exec(); //actualizamos las empresas del array de trabajadores para que ahora sean null
-    }))*/
 
     //va comprobando todos los trabajadores de la base de datos y si el id de ese trabajador este en el arrays de id de mi empresa, pondremos la empresa de ese trabajador a null
     await TrabajadorModel.updateMany({_id: {$in: doc.trabajadores}}, {empresa: null});   //cuando el id este en mi array de trabajadores (es un array de ids Schema.Types.ObjectID)

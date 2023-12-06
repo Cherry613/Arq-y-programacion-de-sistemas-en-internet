@@ -3,7 +3,7 @@ import EmpresaModel from "../db/empresa.ts";
 
 const getBusiness = async ( req: Request, res: Resonse ) => {
     try{
-        const empresa = await EmpresaModel.find().populate(["trabajadores", "tareas"]).exec();
+        const empresa = await EmpresaModel.find()/*.populate(["trabajadores", "tareas"])*/.exec();
         
         res.status(200).send(empresa);
 
