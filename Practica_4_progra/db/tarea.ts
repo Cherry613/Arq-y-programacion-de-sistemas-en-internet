@@ -2,6 +2,7 @@ import mongoose from "npm:mongoose@8.0.0";
 import { ESTADO, Tarea } from "../types.ts";
 import  EmpresaModel from "./empresa.ts";
 import  TrabajadorModel from "./trabajador.ts";
+import TareaModel from "./tarea.ts";
 
 const Schema = mongoose.Schema;
 
@@ -89,6 +90,8 @@ tareaSchema.post("findOneAndDelete", async function (doc: TareaModelType) {
 tareaSchema.post("findOneAndUpdate", async function (doc: TareaModelType) {
     try{//si el estado es closed -> borrar la tarea, borrar la tarea q tenga el mismo id q esta en el trabajador y en la empresa
         if(doc.estado === "CLOSED"){
+            //await TareaModel.deleteOne({_id: doc._id});
+            doc.deleteOne();
             await TrabajadorModel.updateOne({_id: doc.trabajador},{$pull: {tareas: doc._id}});
             await EmpresaModel.updateOne({_id: doc.empresa}, {$pull: {tareas: doc._id}});
         }

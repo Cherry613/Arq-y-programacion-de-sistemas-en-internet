@@ -16,8 +16,8 @@ const Schema = mongoose.Schema;
 const empresaSchema = new Schema(
   {
     nombre: { type: String, required: true },
-    trabajadores: [{ type: Schema.Types.ObjectId, required: false, ref: "Worker" },],
-    tareas: [{ type: Schema.Types.ObjectId, required: false, ref: "Task" },],
+    trabajadores: [{ type: Schema.Types.ObjectId, required: false, ref: "Trabajadores" },],
+    tareas: [{ type: Schema.Types.ObjectId, required: false, ref: "Tareas" },],
   },
   { timestamps: true },
 );
@@ -65,11 +65,11 @@ empresaSchema.post("findOneAndDelete", async function (doc: EmpresaModelType) {
     }))*/
 
     //va comprobando todos los trabajadores de la base de datos y si el id de ese trabajador este en el arrays de id de mi empresa, pondremos la empresa de ese trabajador a null
-    await TrabajadorModel.updateMany({_id: {$in: doc.trabajadores}}, {empresa: null})    //cuando el id este en mi array de trabajadores (es un array de ids Schema.Types.ObjectID)
-    await TareaModel.updateMany({_id: {$in: doc.tareas}}, {empresa: null}) //borrar tarea si no tiene empresa o trabajador -.-? -> si la borro ps delete y yap
+    await TrabajadorModel.updateMany({_id: {$in: doc.trabajadores}}, {empresa: null});   //cuando el id este en mi array de trabajadores (es un array de ids Schema.Types.ObjectID)
+    await TareaModel.updateMany({_id: {$in: doc.tareas}}, {empresa: null}); //borrar tarea si no tiene empresa o trabajador -.-? -> si la borro ps delete y yap
 })
 
-empresaSchema.pre("findOneAndUpdate", async function (){
+empresaSchema.pre("findOneAndUpdate", async function (next ){
     //comprobar que la empresa y el trabajador existan, que la empresa no tenga ya 10 empleados y que el trabajador no tenga ya una empresa
 
     
