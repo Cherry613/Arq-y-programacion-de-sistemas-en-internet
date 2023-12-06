@@ -34,15 +34,15 @@ const app = express();
 app.use(express.json());
 app
   .get ("/worker/:id", getWorkersID)  //DONE
-  .get("/business/:id", getBusinessID)  //DONE
+  .get("/business/:id", getBusinessID)  //DONE -> sí y con populate (de momento)
   .get("/task/:id", getTareaID)  //DONE
   .delete("/worker/:id", deleteWorker)  //DONE ->revisar
   .delete("/business/:id", deleteBusiness)  //DONE -> sí
   .delete("/task/:id", deleteTask)  //DONE -> revisar
   .get("/worker", getWorkers) //DONE
-  .get("/business", getBusiness)  //DONE 
+  .get("/business", getBusiness)  //DONE -> si, pero sin populate
   .get("/task", getTareas)  //DONE
-  .post("/worker", addWorker)  //DONE -> revisar
+  .post("/worker", addWorker)  //DONE -> sí, pero sin pre y post
   .post("/business", addBusiness) //DONE -> si
   .post ("/task", addTask) //DONE -> revisar
   .put("/business/:id/fire/:workerID", )  //business/:id/fire/:workerId -> Deberá despedir de la empresa al trabajador que corresponde al id

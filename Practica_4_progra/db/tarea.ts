@@ -17,13 +17,13 @@ const tareaSchema = new Schema({
 //VALIDACIONES
 tareaSchema
     .path("nombre")
-    .validate(async function (nombre: string) {
+    .validate(function (nombre: string) {
         if(!nombre) throw new Error("Se debe incluir un nombre"); 
     })
 
 tareaSchema
     .path("estado")
-    .validate(async function (estado: string) {     //comprobar q la tarea no empiece como cerrada
+    .validate(function (estado: string) {     //comprobar q la tarea no empiece como cerrada
         if(estado === "CLOSED") throw new Error ("No puedes añadir una tarea con estado Closed");  
     })
 
