@@ -56,8 +56,8 @@ tareaSchema.pre("save", async function(){
 
 //despues de crear la tarea, la añadimos a los arrays de tareas del trabajador y de la empresa
 tareaSchema.post("save", async function (doc: TareaModelType) {
-    await TrabajadorModel.updateOne({_id: doc.trabajador}, {$push: {tareas: doc._id}});
-    await EmpresaModel.updateOne({_id: doc.empresa},{$push: {tareas: doc._id}});
+    await TrabajadorModel.updateOne({_id: doc.trabajador}, {$push: {tareas: doc._id}}).exec();
+    await EmpresaModel.updateOne({_id: doc.empresa},{$push: {tareas: doc._id}}).exec();
 })
 
 tareaSchema.post("findOneAndDelete", async function (doc: TareaModelType) {
@@ -71,8 +71,8 @@ tareaSchema.post("findOneAndUpdate", async function (doc: TareaModelType) {
     try{//si el estado es closed -> borrar la tarea, borrar la tarea q tenga el mismo id q esta en el trabajador y en la empresa
         if(doc.estado === "CLOSED"){
             await doc.deleteOne();
-            await TrabajadorModel.updateOne({_id: doc.trabajador},{$pull: {tareas: doc._id}});
-            await EmpresaModel.updateOne({_id: doc.empresa}, {$pull: {tareas: doc._id}});
+            await TrabajadorModel.updateOne({_id: doc.trabajador},{$pull: {tareas: doc._id}}).exec();
+            await EmpresaModel.updateOne({_id: doc.empresa}, {$pull: {tareas: doc._id}}).exec();
         }
     }catch(error){
         return error;

@@ -41,7 +41,7 @@ trabajadorSchema.pre("save", async function(){
 
 //despues de crear un trabajador en caso de que nos den una empresa, querre actualizar el array de trabajadores de la empresa y añadirle el trabajador
 trabajadorSchema.post("save", async function (doc: TrabajadorModelType) {
-    await EmpresaModel.findOneAndUpdate({_id: doc.empresa}, {$push: {trabajadores: doc._id}});
+    await EmpresaModel.findOneAndUpdate({_id: doc.empresa}, {$push: {trabajadores: doc._id}}).exec();
 })
 
 trabajadorSchema.post("findOneAndDelete", async function (doc: TrabajadorModelType){ 

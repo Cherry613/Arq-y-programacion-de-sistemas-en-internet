@@ -46,8 +46,8 @@ empresaSchema.post("save", async function () {
 empresaSchema.post("findOneAndDelete", async function (doc: EmpresaModelType) {
 
     //va comprobando todos los trabajadores de la base de datos y si el id de ese trabajador este en el arrays de id de mi empresa, pondremos la empresa de ese trabajador a null
-    await TrabajadorModel.updateMany({_id: {$in: doc.trabajadores}}, {empresa: null});   //cuando el id este en mi array de trabajadores (es un array de ids Schema.Types.ObjectID)
-    await TareaModel.updateMany({_id: {$in: doc.tareas}}, {empresa: null}); //borrar tarea si no tiene empresa o trabajador -.-? -> si la borro ps delete y yap
+    await TrabajadorModel.updateMany({_id: {$in: doc.trabajadores}}, {empresa: null}).exec();   //cuando el id este en mi array de trabajadores (es un array de ids Schema.Types.ObjectID)
+    await TareaModel.updateMany({_id: {$in: doc.tareas}}, {empresa: null}).exec(); //borrar tarea si no tiene empresa o trabajador -.-? -> si la borro ps delete y yap
 })
 
 empresaSchema.pre("findOneAndUpdate", async function (next ){
