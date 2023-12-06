@@ -33,7 +33,7 @@ trabajadorSchema
 //PREs Y POSTs
 
 //comprobar que la empresa q nos han dado (en caso de que nos la den) exista y que no tenga mas de 10 empleados
-trabajadorSchema.pre("save", async function(){
+/*trabajadorSchema.pre("save", async function(){
     const empresa = await EmpresaModel.findById(this.empresa).exec();
     if(!empresa) throw new Error("No se ha encontrado esa empresa");
     if(empresa.trabajadores.length === 10) throw new Error ("La empresa no puede tener mas de 10 trabajadores")
@@ -42,7 +42,7 @@ trabajadorSchema.pre("save", async function(){
 //despues de crear un trabajador en caso de que nos den una empresa, querre actualizar el array de trabajadores de la empresa y añadirle el trabajador
 trabajadorSchema.post("save", async function (doc: TrabajadorModelType) {
     await EmpresaModel.findOneAndUpdate({_id: doc.empresa}, {$push: {trabajadores: doc._id}}).exec();
-})
+})*/
 
 trabajadorSchema.post("findOneAndDelete", async function (doc: TrabajadorModelType){ 
 

@@ -48,7 +48,7 @@ tareaSchema
 //PREs Y POSTs
 
 //antes de crear la tarea, comprobar que el trabajor trabaja en la empresa que se ha dado y que tiene menos de 10 tareas.
-tareaSchema.pre("save", async function(){
+/*tareaSchema.pre("save", async function(){
     const empresa = await EmpresaModel.findById({_id: this.empresa}).exec();
     const trabajador = await TrabajadorModel.findOne({_id: {$in: empresa?.trabajadores}}).exec();
     if(trabajador?.tareas.length === 10) throw new Error("El trabajador solo puede tener 10 tareas");
@@ -58,7 +58,7 @@ tareaSchema.pre("save", async function(){
 tareaSchema.post("save", async function (doc: TareaModelType) {
     await TrabajadorModel.updateOne({_id: doc.trabajador}, {$push: {tareas: doc._id}}).exec();
     await EmpresaModel.updateOne({_id: doc.empresa},{$push: {tareas: doc._id}}).exec();
-})
+})*/
 
 tareaSchema.post("findOneAndDelete", async function (doc: TareaModelType) {
 
