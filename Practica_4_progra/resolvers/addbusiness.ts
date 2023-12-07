@@ -18,7 +18,6 @@ const addBusiness = async (req: Request, res: Resonse) => {
     }catch(error){
         return error;
     }
-
 }
 
 export default addBusiness;

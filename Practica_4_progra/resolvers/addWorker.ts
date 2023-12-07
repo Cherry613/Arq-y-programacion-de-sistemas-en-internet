@@ -18,7 +18,6 @@ const addWorker = async (req: Request, res: Resonse) => {
         res.status(400).send(error)
         return error;
     }
-
 }
 
 export default addWorker;

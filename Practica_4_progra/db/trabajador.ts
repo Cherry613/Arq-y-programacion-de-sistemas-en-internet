@@ -49,7 +49,6 @@ trabajadorSchema.post("findOneAndDelete", async function (doc: TrabajadorModelTy
     //buscar las tareas cuyos ids se encuentren en el array de tareas del trabajador que se esta borando y ponerles el trabajador a null
     await TareaModel.updateMany({_id: {$in: doc.tareas}}, {trabajador: null}).exec();   
 
-    //borrar el trabajador de la empresa directamente en la bbdd
     //buscar la empresa cuyo id coincida con la empresa que tenia el trabajador que se esta borrando y despues del array de trabajadores de esa empresa quiero buscar y borrar al empleado
     await EmpresaModel.findOneAndUpdate({_id: doc.empresa},{$pull:{trabajadores: doc._id}}).exec();
 })

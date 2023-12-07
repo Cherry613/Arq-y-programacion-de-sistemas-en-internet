@@ -38,27 +38,22 @@ try {
 const app = express();
 app.use(express.json());
 app
-  .get ("/worker/:id", getWorkerID)  //DONE -> sí y con populate
-  .get("/business/:id", getBusinessID)  //DONE -> sí y con populate
-  .get("/task/:id", getTareaID)  //DONE  -> si y con populate
-  .delete("/worker/:id", deleteWorker)  //DONE -> sí 
-  .delete("/business/:id", deleteBusiness)  //DONE -> sí
-  .delete("/task/:id", deleteTask)  //DONE -> sí
-  .get("/worker", getWorkers) //DONE  -> sí y con populate
-  .get("/business", getBusiness)  //DONE -> si y con populate
-  .get("/task", getTareas)  //DONE ->sip y con populate
-  .post("/worker", addWorker)  //DONE -> sí, pero sin pre + he comprobado que si una empresa tiene 10 trabajadores no puedo añadir otra
-  .post("/business", addBusiness) //DONE -> si
-  .post ("/task", addTask) //DONE -> revisar
-  .put("/business/:id/fire/:workerID", fireWorker)  //business/:id/fire/:workerId -> Deberá despedir de la empresa al trabajador que corresponde al id
-  .put("/business/:id/hire/:workerID", hireWorker)  //business/:id/hire/:workerId -> Deberá contratar de la empresa al trabajador que corresponde al id
-  .put("/task/:id", updateStatus)  ///task/:id?status=x -> Cambiara el estado de una tarea
+  .get ("/worker/:id", getWorkerID)
+  .get("/business/:id", getBusinessID)
+  .get("/task/:id", getTareaID)
+  .delete("/worker/:id", deleteWorker)
+  .delete("/business/:id", deleteBusiness)  
+  .delete("/task/:id", deleteTask)  
+  .get("/worker", getWorkers)
+  .get("/business", getBusiness)  
+  .get("/task", getTareas)  
+  .post("/worker", addWorker)  
+  .post("/business", addBusiness) 
+  .post ("/task", addTask) 
+  .put("/business/:id/fire/:workerID", fireWorker) 
+  .put("/business/:id/hire/:workerID", hireWorker)  
+  .put("/task/:id", updateStatus)  
 
 app.listen(3000, () => {
   console.log("Server listening on port 3000");
 });
-
-/*
-Cuando se elimina una tarea/trabajador/empresa, se deberá eliminar de sus dependencias (ids relacionados)
-Cuando se devuelva una tarea/trabajador/empresa, se deberá devolver también los datos de sus dependencias (usando populate)
-*/

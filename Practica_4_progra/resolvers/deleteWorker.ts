@@ -19,6 +19,4 @@ const deleteWorker = async (req: Request, res: Response) => {
   }
 };
 
-
-
 export default deleteWorker;

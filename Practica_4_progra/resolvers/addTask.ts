@@ -19,7 +19,6 @@ const addTask = async (req: Request, res: Resonse) => {
     }catch(error){
         return error;
     }
-
 }
 
 export default addTask;

@@ -25,6 +25,5 @@ const getWorkerID = async ( req: Request, res: Resonse ) => {
     }
 }
 
-//Cuando se devuelva una tarea/trabajador/empresa, se deberá devolver también los datos de sus dependencias (usando populate)
 
 export default getWorkerID;

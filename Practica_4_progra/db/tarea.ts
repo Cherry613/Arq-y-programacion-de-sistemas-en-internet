@@ -31,7 +31,7 @@ tareaSchema
     .path("empresa")    
     .validate(async function (empresa: mongoose.Types.ObjectId) {   //comprobar que la empresa existe
         if(!empresa) throw new Error ("Debe incluirse una empresa");
-        const business = await EmpresaModel.findById({_id : empresa}).exec();   //no hace falta poner empresa._id porq empresa ya es un id (objectId)
+        const business = await EmpresaModel.findById({_id : empresa}).exec();  
         if(!business) throw new Error ( "Esa empresa no existe");
     });
 
@@ -68,7 +68,7 @@ tareaSchema.post("findOneAndDelete", async function (doc: TareaModelType) {
 })
 
 tareaSchema.post("findOneAndUpdate", async function (doc: TareaModelType) {
-    try{//si el estado es closed -> borrar la tarea, borrar la tarea q tenga el mismo id q esta en el trabajador y en la empresa
+    try{//si el estado es closed -> borrar la tarea, borrarla del trabajador y de la empresa
         if(doc.estado === "CLOSED"){
             await doc.deleteOne();
             await TrabajadorModel.updateOne({_id: doc.trabajador},{$pull: {tareas: doc._id}}).exec();

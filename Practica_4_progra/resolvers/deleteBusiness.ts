@@ -18,6 +18,4 @@ const deleteBusiness = async (req: Request, res: Response) => {
   }
 };
 
-//Cuando se elimina una tarea/trabajador/empresa, se deberá eliminar de sus dependencias (ids relacionados)
-
 export default deleteBusiness;
