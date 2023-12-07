@@ -52,13 +52,13 @@ tareaSchema
     const empresa = await EmpresaModel.findById({_id: this.empresa}).exec();
     const trabajador = await TrabajadorModel.findOne({_id: {$in: empresa?.trabajadores}}).exec();
     if(trabajador?.tareas.length === 10) throw new Error("El trabajador solo puede tener 10 tareas");
-});
+});*/
 
 //despues de crear la tarea, la añadimos a los arrays de tareas del trabajador y de la empresa
 tareaSchema.post("save", async function (doc: TareaModelType) {
     await TrabajadorModel.updateOne({_id: doc.trabajador}, {$push: {tareas: doc._id}}).exec();
     await EmpresaModel.updateOne({_id: doc.empresa},{$push: {tareas: doc._id}}).exec();
-})*/
+})
 
 tareaSchema.post("findOneAndDelete", async function (doc: TareaModelType) {
 

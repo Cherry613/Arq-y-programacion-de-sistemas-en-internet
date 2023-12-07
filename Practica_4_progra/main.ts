@@ -35,16 +35,16 @@ try {
 const app = express();
 app.use(express.json());
 app
-  .get ("/worker/:id", getWorkerID)  //DONE ->
+  .get ("/worker/:id", getWorkerID)  //DONE -> sí y con populate
   .get("/business/:id", getBusinessID)  //DONE -> sí y con populate (de momento)
   .get("/task/:id", getTareaID)  //DONE
   .delete("/worker/:id", deleteWorker)  //DONE -> sí (borre a elsa)
   .delete("/business/:id", deleteBusiness)  //DONE -> sí
   .delete("/task/:id", deleteTask)  //DONE -> revisar
-  .get("/worker", getWorkers) //DONE
+  .get("/worker", getWorkers) //DONE  -> sí y con populate
   .get("/business", getBusiness)  //DONE -> si, pero sin populate
   .get("/task", getTareas)  //DONE
-  .post("/worker", addWorker)  //DONE -> sí, pero sin pre y post
+  .post("/worker", addWorker)  //DONE -> sí, pero sin pre + he comprobado que si una empresa tiene 10 trabajadores no puedo añadir otra
   .post("/business", addBusiness) //DONE -> si
   .post ("/task", addTask) //DONE -> revisar
   .put("/business/:id/fire/:workerID", )  //business/:id/fire/:workerId -> Deberá despedir de la empresa al trabajador que corresponde al id
