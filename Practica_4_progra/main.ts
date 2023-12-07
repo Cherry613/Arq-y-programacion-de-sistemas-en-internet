@@ -10,6 +10,8 @@ import getBusinessID from "./resolvers/getBusinessID.ts";
 import getBusiness from "./resolvers/getBusiness.ts";
 import deleteBusiness from "./resolvers/deleteBusiness.ts";
 import addBusiness from "./resolvers/addbusiness.ts";
+import fireWorker from "./resolvers/fireWorker.ts";
+import hireWorker from "./resolvers/hireWorker.ts";
 
 import getTareaID from "./resolvers/getTareaID.ts";
 import getTareas from "./resolvers/getTareas.ts";
@@ -48,8 +50,8 @@ app
   .post("/worker", addWorker)  //DONE -> sí, pero sin pre + he comprobado que si una empresa tiene 10 trabajadores no puedo añadir otra
   .post("/business", addBusiness) //DONE -> si
   .post ("/task", addTask) //DONE -> revisar
-  .put("/business/:id/fire/:workerID", )  //business/:id/fire/:workerId -> Deberá despedir de la empresa al trabajador que corresponde al id
-  .put("/business/:id/hire/:workerID", )  //business/:id/hire/:workerId -> Deberá contratar de la empresa al trabajador que corresponde al id
+  .put("/business/:id/fire/:workerID", fireWorker)  //business/:id/fire/:workerId -> Deberá despedir de la empresa al trabajador que corresponde al id
+  .put("/business/:id/hire/:workerID", hireWorker)  //business/:id/hire/:workerId -> Deberá contratar de la empresa al trabajador que corresponde al id
   .put("/task/:id", updateStatus)  ///task/:id?status=x -> Cambiara el estado de una tarea
 
 app.listen(3000, () => {

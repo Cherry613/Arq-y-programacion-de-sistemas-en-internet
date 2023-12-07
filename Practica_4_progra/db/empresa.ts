@@ -75,9 +75,12 @@ empresaSchema.post("findOneAndDelete", async function (doc: EmpresaModelType) {
     }
 })*/
 
-/*empresaSchema.post("findOneAndUpdate", async function (doc: EmpresaModelType) {
-    //despues de actualizar la empresa y añadir el trabajador a su array debemos modificiar el trabajador y añadirle la empresa 
-    const update = this.getUpdate();
+empresaSchema.post("findOneAndUpdate", async function (doc: EmpresaModelType) {
+  
+    
+  
+   //despues de actualizar la empresa y añadir el trabajador a su array debemos modificiar el trabajador y añadirle la empresa 
+   /* const update = this.getUpdate();
     if(!update) throw new Error ("No hay actualizaciones")
 
     if(update["$push"] !== undefined){
@@ -86,8 +89,7 @@ empresaSchema.post("findOneAndDelete", async function (doc: EmpresaModelType) {
             await 
         }
     }
-    await TrabajadorModel.updateOne({_id: doc.trabajadores})
-
+    await TrabajadorModel.updateOne({_id: doc.trabajadores})*/
      /*
     const update = this.getUpdate();
     if(!update) throw new Error(`Update is empty`);
@@ -102,9 +104,9 @@ empresaSchema.post("findOneAndDelete", async function (doc: EmpresaModelType) {
             const workerId = update["$pull"]["workers"];
             await WorkerModel.findOneAndUpdate({_id: workerId},{business: null}).exec();
         }
-    }
+    }*/
     
-})*/
+})
 
 export type EmpresaModelType = mongoose.Document & Omit<Empresa, "id">
 

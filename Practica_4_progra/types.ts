@@ -24,11 +24,3 @@ export type Tarea ={
     empresa: Omit<Empresa, "trabajadores" | "tareas"> 
 }
 
-
-/*
-Habrá 3 colecciones, Empresa-Trabajador-Tarea
-Las tareas tienen estados (TO DO, In Progress, In Test, Closed), trabajador que la realiza y empresa que la crea
-El trabajador solo puede pertenecer a una empresa y puede tener como máximo 10 tareas
-Cuando una tarea llega al estado Closed se deberá eliminar y también todas sus referencias
-Una empresa puede tener máximo 10 trabajadores
-*/

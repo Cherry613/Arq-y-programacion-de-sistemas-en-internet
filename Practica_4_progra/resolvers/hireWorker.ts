@@ -1,5 +1,6 @@
 import { Request, Response } from "npm:express@4.18.2";
 import EmpresaModel from "../db/empresa.ts";
+import TrabajadorModel from "../db/trabajador.ts";
 
 
 const hireWorker = async (req: Request, res: Response) => {
@@ -11,6 +12,8 @@ const hireWorker = async (req: Request, res: Response) => {
         if(!empresa) throw new Error (`No se ha encontrado la empresa con id ${id}`);
 
         await EmpresaModel.findOneAndUpdate({_id: id}, {$push: {trabajadores: workerID}}, {new: true}).exec();
+        await TrabajadorModel.findOneAndUpdate({_id: workerID}, {empresa: id}).exec();
+
         res.status(200).send(`Se ha contratado al trabajador ${workerID}`);
 
     }catch(error){
