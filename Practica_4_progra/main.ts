@@ -37,10 +37,10 @@ app.use(express.json());
 app
   .get ("/worker/:id", getWorkerID)  //DONE -> sí y con populate
   .get("/business/:id", getBusinessID)  //DONE -> sí y con populate (de momento)
-  .get("/task/:id", getTareaID)  //DONE
+  .get("/task/:id", getTareaID)  //DONE  -> si y con populate
   .delete("/worker/:id", deleteWorker)  //DONE -> sí (borre a elsa)
   .delete("/business/:id", deleteBusiness)  //DONE -> sí
-  .delete("/task/:id", deleteTask)  //DONE -> revisar
+  .delete("/task/:id", deleteTask)  //DONE -> sí
   .get("/worker", getWorkers) //DONE  -> sí y con populate
   .get("/business", getBusiness)  //DONE -> si, pero sin populate
   .get("/task", getTareas)  //DONE

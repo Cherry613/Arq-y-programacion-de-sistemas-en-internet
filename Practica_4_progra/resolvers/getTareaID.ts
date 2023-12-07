@@ -11,7 +11,7 @@ const getTareaID = async ( req: Request, res: Resonse ) => {
             return;
         }
 
-        res.status(200).send();
+        res.status(200).send(tarea);
 
     }catch(error){
         res.status(404).send(error.message)
