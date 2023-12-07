@@ -50,12 +50,12 @@ empresaSchema.post("findOneAndDelete", async function (doc: EmpresaModelType) {
     await TareaModel.updateMany({_id: {$in: doc.tareas}}, {empresa: null}).exec(); //borrar tarea si no tiene empresa o trabajador -.-? -> si la borro ps delete y yap
 })
 
-empresaSchema.pre("findOneAndUpdate", async function (next ){
+ /* empresaSchema.pre("findOneAndUpdate", async function (next ){
     //comprobar que la empresa y el trabajador existan, que la empresa no tenga ya 10 empleados y que el trabajador no tenga ya una empresa
 
     
       
-   /* const update = this.getUpdate();
+  const update = this.getUpdate();
     if(!update) throw new Error (`No hay actualzaciones`);
 
     const empresa = await EmpresaModelType.findById(this.getQuery()["_id"]).exec();
@@ -72,9 +72,8 @@ empresaSchema.pre("findOneAndUpdate", async function (next ){
             if(!trabajador) throw new Error ("Ese trabajador no existe");
             if(trabajador.empresa != null) throw new Error ("Este trabajador ya trabaja en otra empresa");
         }
-    }*/
-   
-})
+    }
+})*/
 
 /*empresaSchema.post("findOneAndUpdate", async function (doc: EmpresaModelType) {
     //despues de actualizar la empresa y añadir el trabajador a su array debemos modificiar el trabajador y añadirle la empresa 

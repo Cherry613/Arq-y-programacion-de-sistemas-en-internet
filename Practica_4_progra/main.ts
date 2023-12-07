@@ -15,6 +15,7 @@ import getTareaID from "./resolvers/getTareaID.ts";
 import getTareas from "./resolvers/getTareas.ts";
 import deleteTask from "./resolvers/deleteTask.ts";
 import addTask from "./resolvers/addTask.ts";
+import updateStatus from "./resolvers/updateStatus.ts";
 
 import { load } from "https://deno.land/std@0.204.0/dotenv/mod.ts";
 const env = await load();
@@ -36,20 +37,20 @@ const app = express();
 app.use(express.json());
 app
   .get ("/worker/:id", getWorkerID)  //DONE -> sí y con populate
-  .get("/business/:id", getBusinessID)  //DONE -> sí y con populate (de momento)
+  .get("/business/:id", getBusinessID)  //DONE -> sí y con populate
   .get("/task/:id", getTareaID)  //DONE  -> si y con populate
-  .delete("/worker/:id", deleteWorker)  //DONE -> sí (borre a elsa)
+  .delete("/worker/:id", deleteWorker)  //DONE -> sí 
   .delete("/business/:id", deleteBusiness)  //DONE -> sí
   .delete("/task/:id", deleteTask)  //DONE -> sí
   .get("/worker", getWorkers) //DONE  -> sí y con populate
-  .get("/business", getBusiness)  //DONE -> si, pero sin populate
-  .get("/task", getTareas)  //DONE
+  .get("/business", getBusiness)  //DONE -> si y con populate
+  .get("/task", getTareas)  //DONE ->sip y con populate
   .post("/worker", addWorker)  //DONE -> sí, pero sin pre + he comprobado que si una empresa tiene 10 trabajadores no puedo añadir otra
   .post("/business", addBusiness) //DONE -> si
   .post ("/task", addTask) //DONE -> revisar
   .put("/business/:id/fire/:workerID", )  //business/:id/fire/:workerId -> Deberá despedir de la empresa al trabajador que corresponde al id
   .put("/business/:id/hire/:workerID", )  //business/:id/hire/:workerId -> Deberá contratar de la empresa al trabajador que corresponde al id
-  .put("/task/:id", )  ///task/:id?status=x -> Cambiara el estado de una tarea
+  .put("/task/:id", updateStatus)  ///task/:id?status=x -> Cambiara el estado de una tarea
 
 app.listen(3000, () => {
   console.log("Server listening on port 3000");
