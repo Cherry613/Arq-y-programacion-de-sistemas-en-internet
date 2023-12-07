@@ -1,7 +1,7 @@
 import {Request, Resonse} from "npm:express@4.18.2";
 import  TrabajadorModel from "../db/trabajador.ts";
 
-const getWorkers = async ( req: Request, res: Resonse ) => {
+const getWorkerID = async ( req: Request, res: Resonse ) => {
     try{
         const {id} = req.params;
 
@@ -27,4 +27,4 @@ const getWorkers = async ( req: Request, res: Resonse ) => {
 
 //Cuando se devuelva una tarea/trabajador/empresa, se deberá devolver también los datos de sus dependencias (usando populate)
 
-export default getWorkers;
+export default getWorkerID;
