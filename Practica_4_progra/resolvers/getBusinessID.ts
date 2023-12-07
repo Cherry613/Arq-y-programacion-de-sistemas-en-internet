@@ -5,7 +5,7 @@ const getBusinessID = async ( req: Request, res: Resonse ) => {
     try{
         const {id} = req.params;
 
-        const empresa = await EmpresaModel.findOne({_id: id})/*.populate(["trabajadores", "tareas"])*/.exec();
+        const empresa = await EmpresaModel.findOne({_id: id}).populate(["trabajadores", "tareas"]).exec();
         
         if(!empresa){
             res.status(400).send("No se ha encontrado la empresa");
