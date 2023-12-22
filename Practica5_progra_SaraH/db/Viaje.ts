@@ -1,8 +1,8 @@
 import mongoose from "npm:mongoose@8.0.0";
 import { Viaje } from "../types.ts";
 import { ESTADOS } from "../types.ts";
-import ClienteModel from "./Cliente.ts";
-import ConductorModel from "./Conductor.ts";
+import { ClienteModel } from "./Cliente.ts";
+import { ConductorModel } from "./Conductor.ts";
 import { GraphQLError } from "graphql";
 
 const Schema = mongoose.Schema;
@@ -37,8 +37,8 @@ viajeSchema
         const tarjetasConDinero = cliente.cards.filter((elem) => elem.money > this.money);
         if(tarjetasConDinero.length === 0) throw new GraphQLError (`No se pudo pagar el viaje`);
 
-        cliente.cards[cliente.cards.indexOf(tarjetasConDinero[0])].money -= this.money;     //si no va lo del this.money, ponerlo en un post 
-        cliente.save();
+        /*cliente.cards[cliente.cards.indexOf(tarjetasConDinero[0])].money -= this.money;     //si no va lo del this.money, ponerlo en un post 
+        cliente.save();*/
 
     });
 
@@ -54,11 +54,30 @@ viajeSchema
     });
 
 
-//post para actualizar el viaje en cliente y conductor
+//post para añadir el viaje a cliente y conductor + cobrarle el viaje al cliente.
+viajeSchema.post("save", async function (){  
+    const cliente = await ClienteModel.findOneAndUpdate({_id: this.client}, {$push: {travels: this._id}}).exec();  //añadimos el viaje al cliente
+    await ConductorModel.findOneAndUpdate({_id: this.driver}, {$push: {travels: this._id}}).exec();  //añadimos el viaje al conductor
 
-//Un viaje solamente se puede crear, si ambos están disponibles, y el cliente tiene dinero
-//Cuando se termina un viaje, este NUNCA se borra del historial de viajes, solamente se cambia su estado
+    const tarjetasConDinero = cliente?.cards.filter((elem) => elem.money > this.money); //comprobamos que el cliente tenga una tarjeta con dinero suficiente para el viaje
+
+    cliente.cards[cliente.cards.indexOf(tarjetasConDinero[0])].money -= this.money;     //cobramos el viaje en la primera tarjeta que tenga dinero suficiente
+    cliente.save();
+})
+
+//al borrarse un viaje, ese viaje se debe borrar tambien del cliente y el conductor
+viajeSchema.pre("deleteMany", async function () {
+    const id_viajes = this.getQuery()["_id"]["$in"];
+    const viajes = await ViajeModel.find({_id: {$in: id_viajes}}).exec();
+
+    await Promise.all(await viajes.map( async (elem) => {
+        await ClienteModel.findOneAndUpdate({_id: elem.client}, {$pull: {travels: elem._id}}).exec();
+        await ConductorModel.findOneAndUpdate({_id: elem.driver}, {$pull: {travels: elem._id}}).exec();
+    }))
+
+}) 
 
 export type ViajeModelType = mongoose.Document & Omit<Viaje, "id">;
 
-export default mongoose.model<ViajeModelType>("Viaje", viajeSchema);
+//export default mongoose.model<ViajeModelType>("Viaje", viajeSchema);
+export const ViajeModel = mongoose.model<ViajeModelType>("Viaje", viajeSchema);

@@ -1,5 +1,7 @@
 import mongoose from "npm:mongoose@8.0.0";
 import { Cliente } from "../types.ts";
+import { GraphQLError } from "graphql";
+
 
 const Schema = mongoose.Schema;
 
@@ -33,10 +35,6 @@ const clienteSchema = new Schema({
         maxLength: [24, `La longitud de una id de mongo debe de ser de exactamente 24 caracteres hexadecimales`]}]
 })
 
-//Cuando se crea un cliente solamente se le puede pasar el name y el email
-//Un cliente y un conductor solamente pueden tener un viaje activo
-//Cuando se borra un cliente o un conductor, entonces si que se borran los viajes y sus referencias
-
 
 //VALIDAR
 //validar que el email sea formato email -> expresiones regulares
@@ -44,15 +42,16 @@ clienteSchema
     .path("email")
     .validate( function (email: string) {
         const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;   //no empieza por especiales ni despeus del @ tampoco
-        return emailRegex.test(email);
+        if(!emailRegex.test(email)) throw new GraphQLError (`El email no es correcto`);
+        return true;
     });
 
 //validar que el numero de la tarjeta sea formato tarjeta
 clienteSchema
     .path("cards.number")
-    .validate(function(number: number){
-        const numero_string = number.toString();
-        if(numero_string.length != 16) return false;
+    .validate(function(number: string){ //se usa string porque con int no se llega a numeros de 16 cifras
+        const numberRegex = /^([0-9]{16})$/;
+        if(!numberRegex.test(number)) throw new GraphQLError (`El numero de la tarjeta no es correcto`);
         return true;
     });
 
@@ -70,16 +69,27 @@ clienteSchema
     .path("cards.expirity")
     .validate(function (expirity: string){
         const expirityRegex = /^(0[1-9]|1[0-2])\/([0-9]{4})$/;
-        return expirityRegex.test(expirity);
+        if(!expirityRegex.test(expirity)) throw new GraphQLError (`El fecha de expiracion no es correcta`);
+        return true;
     })
 
 //Comprobar que la tarjeta no tenga dinero negativo
+clienteSchema
+    .path("cards.money")
+    .validate(function(money: number){
+        if(money < 0 ) throw new GraphQLError (`La tarjeta no puede tener dinero negativo`);
+    })
 
 
-//cuando hagas el viaje ya estaria ongoing (solo 2 estados o haciendose o acabado) => solo habria q comproar
-//el ultimo elemento del array para ver si esta activo o no 
-
+//al borrar un cliente, borrar sus viajes y sus referencias
+clienteSchema.pre("findOneAndDelete", async function () {
+    //codigo cedido por Guillermo Infiesta 
+    const id_cliente = this.getQuery()["_id"]  //del {_id: args.id} q habia en el findOneAndDelete, coge el _id (el propio id de mongo, no tal cual un "_id")
+    const cliente = await ClienteModel.findById(id_cliente).exec();
+    this.deleteMany({_id: {$in: cliente?.travels}}).exec(); //se borran todos los viajes q tenga ese cliente  
+})
 
 export type ClienteModelType = mongoose.Document & Omit<Cliente, "id">;
 
-export default mongoose.model<ClienteModelType>("Cliente", clienteSchema);
+//export default mongoose.model<ClienteModelType>("Cliente", clienteSchema);
+export const ClienteModel = mongoose.model<ClienteModelType>("Cliente", clienteSchema);

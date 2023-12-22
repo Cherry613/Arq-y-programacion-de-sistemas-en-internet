@@ -1,12 +1,10 @@
-import ClienteModel from "../db/Cliente.ts";
+import { ClienteModel } from "../db/Cliente.ts";
 import { Cliente } from "../types.ts";
-import ConductorModel from "../db/Conductor.ts";
+import { ConductorModel } from "../db/Conductor.ts";
 import { Conductor } from "../types.ts";
-import ViajeModel from "../db/Viaje.ts";
+import { ViajeModel } from "../db/Viaje.ts";
 import { Viaje } from "../types.ts";
 
-
-//HACER LAS QUERIES TODAS JUNTAS
 
 export const Query = {
     clientes: async(): Promise<Cliente[]> => {

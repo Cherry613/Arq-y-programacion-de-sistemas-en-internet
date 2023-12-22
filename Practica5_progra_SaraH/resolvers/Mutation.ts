@@ -1,33 +1,21 @@
 import mongoose from "npm:mongoose@8.0.0";
-import ClienteModel from "../db/Cliente.ts";
-import ConductorModel from "../db/Conductor.ts";
-import ViajeModel from "../db/Viaje.ts";
+import { ClienteModel }  from "../db/Cliente.ts";
+import { ConductorModel } from "../db/Conductor.ts";
+import { ViajeModel } from "../db/Viaje.ts";
+import { GraphQLError } from "graphql";
+import { ESTADOS } from "../types.ts";
 
-//aqui van todos los mutaciones TODAS JUNTAS*9+
+
 
 export const Mutation = {
-    /*
-    addCliente( name: String!, email: String!): Cliente!
-    addConductor( name: String!, email: String!, username: String!): Driver!
-    addViaje(client: ID!, driver: ID!, money: Int!, distance: Int!, date: String!) : 
-    
-    deleteCliente(id: ID!): String! #string que dice q hemos borrado
-    deleteDriver(id: ID!): String!  #string que dice q hemos borrado
-    deleteTarjetaFromCliente(id_tarjeta: ID!, id_cliente: ID!): String!  #string que dice q hemos borrado
-
-    tarjetaCliente(id: ID!, name: String!): Pet!    #update de añadir una tarjeta al cliente
-    terminarViaje(id: ID!) #update del estado del viaje y borrar el viaje
-    */
    
     addCliente: async (_:unknown, args: {name: string, email: string}) => {
         try{
-            const cliente = new ClienteModel({name: args.name, email: args.email});
-            await cliente.save();
+            await ClienteModel.create({name: args.name, email: args.email});
+            /*const cliente = new ClienteModel({name: args.name, email: args.email});
+            await cliente.save();*/
 
-            return{
-                name: cliente.name,
-                email: cliente.email
-            };
+            return "Se ha podido crear el cliente";
 
         }catch(error){
             return error.message;
@@ -37,14 +25,11 @@ export const Mutation = {
 
     addConductor: async (_: unknown, args: {name: string, email: string, username: string}) => {
         try{
-            const conductor = new ConductorModel ({name: args.name, email: args.email, username: args.username});
-            await conductor.save();
+            await ConductorModel.create({name: args.name, email: args.email, username: args.username});
+            /*const conductor = new ConductorModel ({name: args.name, email: args.email, username: args.username});
+            await conductor.save();*/
 
-            return {
-                name: conductor.name,
-                email: conductor.email,
-                username: conductor.username
-            };
+            return "Se ha creado el conductor"
 
         }catch(error){
             return error.message;
@@ -54,20 +39,78 @@ export const Mutation = {
 
     addViaje: async (_: unknown, args: {client:  mongoose.Types.ObjectId, driver:  mongoose.Types.ObjectId, money: number, distance: number, date: string}) => {
         try{
-            const viaje = new ViajeModel({client: args.client, driver: args.driver, money: args.money, distance: args.distance, date: args.date});
-            await viaje.save();
+            await ViajeModel.create({client: args.client, driver: args.driver, money: args.money, distance: args.distance, date: args.date});
+            /*const viaje = new ViajeModel({client: args.client, driver: args.driver, money: args.money, distance: args.distance, date: args.date});
+            await viaje.save();*/
 
-            return{
-                client: viaje.client,
-                driver: viaje.driver,
-                money: viaje.money,
-                distance: viaje.distance,
-                date: viaje.date
-            };
+            return  "Se ha creado el viaje"
 
         }catch(error){
             return error.message;
         }
-    }
+    },
+
+    deleteCliente: async (_: unknown, args: {id: mongoose.Types.ObjectId}) => {
+        try{
+            const cliente = await ClienteModel.findOneAndDelete({_id: args.id}).exec();
+            if(!cliente) throw new GraphQLError(`No se ha encontrado ningun cliente con el id ${args.id}`);
+            return true;
+
+        }catch(error){
+            return error.message;
+        }
+        
+        
+    },
+
+    deleteDriver: async (_: unknown, args: {id: mongoose.Types.ObjectId}) => {
+        try{
+            const conductor = await ConductorModel.findOneAndDelete({_id: args.id}).exec();
+            if(!conductor) throw new GraphQLError(`No se ha encontrado ningun conductor con el id ${args.id}`);
+            return true;
+
+        }catch(error){
+            return error.message;
+        }
+        
+    },
+
+    deleteTarjetaFromCliente: async (_: unknown, args: {id_tarjeta: string, id_cliente: mongoose.Types.ObjectId}) => {
+        try{
+            const eliminado = await ClienteModel.findOneAndUpdate({_id: args.id_cliente}, {$pull: {cards: {number: args.id_tarjeta}}}).exec();   //actualiza la tarjeta cuyo num coincida con el que le hemos pasado + del cliente q coincida con lo q hemos pasado
+            if(!eliminado) throw new GraphQLError (`La tarjeta no se ha eliminado`);
+            return true;
+
+        }catch(error){
+            return error.message;
+        }
+    },
+
+    tarjetaCliente: async (_: unknown, args: {id_cliente: mongoose.Types.ObjectId, numero: string, cvv: number, expirity: string, money: number}) => {
+        try{
+            const {numero, cvv, expirity, money} = args;
+            const tarjeta  = {numero, cvv, expirity, money};
+
+            const update = await ClienteModel.findOneAndUpdate({_id: args.id_cliente}, {$push: {cards: tarjeta }}).exec();
+            if(!update) throw new GraphQLError(`No existe el cliente`);
+            return true;
+
+        }catch(error){
+            return error.message;
+        }
+        
+    },
     
+
+    terminarViaje: async (_: unknown, args: {id: string}) => {
+        try{
+            const terminado = await ViajeModel.findOneAndUpdate({_id: args.id}, {status: ESTADOS.finish}).exec();
+            if(!terminado) throw new GraphQLError (`No existe el viaje`);
+            return true;
+
+        }catch(error){
+            return error.message;
+        }
+        
+    }
 }
