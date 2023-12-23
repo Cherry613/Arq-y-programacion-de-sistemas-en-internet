@@ -3,7 +3,7 @@ export const typeDefs = `#graphql
   type Cliente {
     name: String!
     email: String!
-    cards: [Tarjeta]!   #! dentro -> el array tiene q tener minimo un elemento,  ! fuera -> array puede estar vacio,  ! dos -> array existe y minimo tendra un elemento
+    cards: [Tarjeta]! 
     travels: [ID]!
   }
 
@@ -40,11 +40,11 @@ export const typeDefs = `#graphql
     addConductor( name: String!, email: String!, username: String!): String!
     addViaje(client: ID!, driver: ID!, money: Int!, distance: Int!, date: String!): String!
     
-    deleteCliente(id: ID!): String! #string que dice q hemos borrado
-    deleteDriver(id: ID!): String!  #string que dice q hemos borrado
-    deleteTarjeta(num_tarjeta: String!, id_cliente: ID!): String!  #string que dice q hemos borrado
+    deleteCliente(id: ID!): String!
+    deleteDriver(id: ID!): String!
+    deleteTarjeta(num_tarjeta: String!, id_cliente: ID!): String! 
 
-    addTarjeta(id_cliente: ID!, number: String!, cvv: Int!, expirity: String!, money: Int!): String!    #update de añadir una tarjeta al cliente  -> devolver string de q acabo 
-    terminarViaje(id: ID!): String! #update del estado del viaje 
+    addTarjeta(id_cliente: ID!, number: String!, cvv: Int!, expirity: String!, money: Int!): String! 
+    terminarViaje(id: ID!): String! 
   }
 `;

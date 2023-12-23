@@ -15,11 +15,8 @@ const conductorSchema = new Schema (
     {timestamps: true}
 );
 
-//Un cliente y un conductor solamente pueden tener un viaje activo
-//Cuando se borra un cliente o un conductor, entonces si que se borran los viajes y sus referencias
-
 //VALIDAR
-//validar que el nombre solo sean caracteres y no haya numeros ni caracteres especiales
+//validar que el nombre solo sean caracteres, que no haya numeros ni caracteres especiales utilizando expresiones regulares
 conductorSchema
     .path("name")
     .validate( function (name: string){
@@ -28,7 +25,7 @@ conductorSchema
         return true;
     });
 
-//validar que el email sea formato email -> expresiones regulares
+//validar que el email sea formato email utilizando expresiones regulares
 conductorSchema
     .path("email")
     .validate( function (email: string) {
@@ -39,11 +36,11 @@ conductorSchema
 
 //al borrar un conductor, borrar sus viajes y sus referencias
 conductorSchema.pre("findOneAndDelete", async function () {
-    //codigo cedido por Guillermo Infiesta 
-    const id_conductor = this.getQuery()["_id"]  //del {_id: args.id} q habia en el findOneAndDelete, coge el _id (el propio id de mongo, no tal cual un "_id")
+    //codigo cedido por Guillermo Infiesta
+    const id_conductor = this.getQuery()["_id"]  //de la query que habia en el findOneAndDelete ( {_id: args.id} ), coge -> _id
 
-    const conductor = await ConductorModel.findById(id_conductor).exec();
-    await ViajeModel.deleteMany({_id: {$in: conductor?.travels}}).exec(); //se borran todos los viajes q tenga ese conductor  
+    const conductor = await ConductorModel.findById(id_conductor).exec();   //buscar al conductor que coincida con ese _id
+    await ViajeModel.deleteMany({_id: {$in: conductor?.travels}}).exec();   //se borran todos los viajes que tenga ese cliente antes de borrar al propio conductor (otro pre)
 })
 
 export type ConductorModelType = mongoose.Document & Omit<Conductor, "id">;

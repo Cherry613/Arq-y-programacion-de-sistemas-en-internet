@@ -3,24 +3,7 @@ import { Cliente } from "../types.ts";
 import { GraphQLError } from "graphql";
 import { ViajeModel } from "./Viaje.ts";
 
-
 const Schema = mongoose.Schema;
-
-/*const clienteSchema = new Schema (
-    {
-        name: {type: String, required: true},
-        email: {type: String, required: true, unique: true},   //formato email
-        cards: [{type: {
-            number: {type: Number, required: true}, //formato tarjeta
-            cvv: {types: Number, required: true},   //3 caracteres
-            expirity: {type: String, required: true}, //MM/YYYY
-            money: {type: Number, required: false, default: 0}
-        }, required: false}],
-        travels: [{type: Schema.Types.ObjectId, required: false, ref: "Viaje"},]  //mejor array de strings con ids
-
-    },
-    {timestamps: true}
-);*/
 
 const clienteSchema = new Schema({
     name: {type: String, required: true, minlength: 3},
@@ -31,29 +14,12 @@ const clienteSchema = new Schema({
         expirity: {type: String, required: true},
         money: {type: Number, required: true}
     }], required: false}, 
-    travels: [{type: mongoose.Types.ObjectId, ref: `Travels`, default: []
-        /*minLength: [24, `La longitud de una id de mongo debe de ser de exactamente 24 caracteres hexadecimales`], 
-maxLength: [24, `La longitud de una id de mongo debe de ser de exactamente 24 caracteres hexadecimales`]*/}]
+    travels: [{type: mongoose.Types.ObjectId, ref: `Travels`, default: []}]
 })
-
-/*const clienteSchema = new Schema(
-    {
-      name: { type: String, required: true },
-      email: { type: String, required: true, unique: true}, //formato email
-      cards: { type: [{
-          number: { type: String, required: true, unique: true}, //formato tarjeta
-          cvv: { type: Number, required: true}, 
-          expirity: {type: String, required: true}, //MM/YYYY
-          money: {type: Number, required: false, default: 0},
-          }], required: false , default: []},
-      travels: { type: [Schema.Types.ObjectId], required:false, ref: "Viaje", default: []},
-    },
-    { timestamps: true }
-  );*/
 
 
 //VALIDAR
-//validar que el nombre solo sean caracteres y no haya numeros ni caracteres especiales
+//validar que el nombre solo sean caracteres, que no haya numeros ni caracteres especiales utilizando expresiones regulares
 clienteSchema
     .path("name")
     .validate( function (name: string){
@@ -62,11 +28,11 @@ clienteSchema
         return true;
     });
 
-//validar que el email sea formato email -> expresiones regulares
+//validar que el email sea formato email utilizando expresiones regulares
 clienteSchema
     .path("email")
     .validate( function (email: string) {
-        const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;   //no empieza por especiales ni despeus del @ tampoco
+        const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
         if(!emailRegex.test(email)) throw new GraphQLError (`El email no es correcto`);
         return true;
     });
@@ -92,7 +58,7 @@ clienteSchema
         return true;
     });
 
-//comprobar que la fecha de caducidad de la tarjeta tenga formato MM/YYYY
+//comprobar que la fecha de caducidad de la tarjeta tenga formato MM/YYYY utilizando expresiones regulares
 clienteSchema
     .path("cards.expirity")
     .validate(function (expirity: string){
@@ -111,11 +77,11 @@ clienteSchema
 
 //al borrar un cliente, borrar sus viajes y sus referencias
 clienteSchema.pre("findOneAndDelete", async function () {
-    //codigo cedido por Guillermo Infiesta 
-    const id_cliente = this.getQuery()["_id"]  //del {_id: args.id} q habia en el findOneAndDelete, coge el _id (el propio id de mongo, no tal cual un "_id")
+    //codigo cedido por Guillermo Infiesta
+    const id_cliente = this.getQuery()["_id"]  //de la query que habia en el findOneAndDelete ( {_id: args.id} ), coge -> _id
     
-    const cliente = await ClienteModel.findById(id_cliente).exec();
-    await ViajeModel.deleteMany({_id: {$in: cliente?.travels}}).exec(); //se borran todos los viajes q tenga ese cliente antes de borrar al cliente (pre)
+    const cliente = await ClienteModel.findById(id_cliente).exec(); //buscar al cliente que coincida con ese _id
+    await ViajeModel.deleteMany({_id: {$in: cliente?.travels}}).exec(); //se borran todos los viajes que tenga ese cliente antes de borrar al propio cliente (otro pre)
 })
 
 export type ClienteModelType = mongoose.Document & Omit<Cliente, "id">;
