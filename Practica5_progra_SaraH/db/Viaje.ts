@@ -11,8 +11,8 @@ const viajeSchema = new Schema (
     {
         client: {type: Schema.Types.ObjectId, required: true}, //id
         driver: {type: Schema.Types.ObjectId, required: true}, //id
-        money: {type: Number, required: true, min: 5},
-        distance: {type: Number, required: true, min: 0.01}, //en km 
+        money: {type: Number, required: true, min: [5, "el precio miínimo de un viaje son 5€"]},
+        distance: {type: Number, required: true, min: [0.01, "el viaje debe ser de mínimo 0.01 km"]}, //en km 
         date: {type: String, required: true},
         status: {type: String, required: false, enum: ESTADOS, default: ESTADOS.ongoing}
     },
@@ -25,7 +25,7 @@ const viajeSchema = new Schema (
 viajeSchema
     .path("client")
     .validate(async function (client: mongoose.Types.ObjectId) {
-        const cliente = await ClienteModel.findById({_id: client}).exec();  //comprobar que el cliente existe
+        const cliente = await ClienteModel.findById({client}).exec();  //comprobar que el cliente existe
         //ese throw para un try catch q este al hacer un viaje
         if(!cliente) throw new GraphQLError (`No se ha encontrado ningun cliente con el id ${client}`);
 
@@ -45,7 +45,7 @@ viajeSchema
 viajeSchema
     .path("driver")
     .validate(async function (driver: mongoose.Types.ObjectId) {
-        const conductor = await ConductorModel.findById({_id: driver}).exec();
+        const conductor = await ConductorModel.findById({driver}).exec();
         //ese throw para un try catch q este al hacer un viaje
         if(!conductor) throw new GraphQLError (`No se ha encontrado ningun cliente con el id ${driver}`);
 

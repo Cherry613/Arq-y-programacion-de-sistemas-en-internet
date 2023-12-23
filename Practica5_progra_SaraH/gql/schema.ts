@@ -42,9 +42,9 @@ export const typeDefs = `#graphql
     
     deleteCliente(id: ID!): String! #string que dice q hemos borrado
     deleteDriver(id: ID!): String!  #string que dice q hemos borrado
-    deleteTarjetaFromCliente(id_tarjeta: String!, id_cliente: ID!): String!  #string que dice q hemos borrado
+    deleteTarjeta(num_tarjeta: String!, id_cliente: ID!): String!  #string que dice q hemos borrado
 
-    tarjetaCliente(id: ID!, name: String!): String!    #update de añadir una tarjeta al cliente  -> devolver string de q acabo 
+    addTarjeta(id_cliente: ID!, number: String!, cvv: Int!, expirity: String!, money: Int!): String!    #update de añadir una tarjeta al cliente  -> devolver string de q acabo 
     terminarViaje(id: ID!): String! #update del estado del viaje y borrar el viaje  -> devolver string de q acabo
   }
 `;

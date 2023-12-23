@@ -15,7 +15,7 @@ export const Mutation = {
             /*const cliente = new ClienteModel({name: args.name, email: args.email});
             await cliente.save();*/
 
-            return "Se ha podido crear el cliente";
+            return "Se ha creado el cliente";
 
         }catch(error){
             return error.message;
@@ -54,7 +54,7 @@ export const Mutation = {
         try{
             const cliente = await ClienteModel.findOneAndDelete({_id: args.id}).exec();
             if(!cliente) throw new GraphQLError(`No se ha encontrado ningun cliente con el id ${args.id}`);
-            return true;
+            return "Se ha borrado al cliente";
 
         }catch(error){
             return error.message;
@@ -67,7 +67,7 @@ export const Mutation = {
         try{
             const conductor = await ConductorModel.findOneAndDelete({_id: args.id}).exec();
             if(!conductor) throw new GraphQLError(`No se ha encontrado ningun conductor con el id ${args.id}`);
-            return true;
+            return "Se ha borrado al conductor";
 
         }catch(error){
             return error.message;
@@ -75,30 +75,29 @@ export const Mutation = {
         
     },
 
-    deleteTarjetaFromCliente: async (_: unknown, args: {id_tarjeta: string, id_cliente: mongoose.Types.ObjectId}) => {
+    deleteTarjeta: async (_: unknown, args: {num_tarjeta: string, id_cliente: mongoose.Types.ObjectId}) => {
         try{
-            const eliminado = await ClienteModel.findOneAndUpdate({_id: args.id_cliente}, {$pull: {cards: {number: args.id_tarjeta}}}).exec();   //actualiza la tarjeta cuyo num coincida con el que le hemos pasado + del cliente q coincida con lo q hemos pasado
+            const eliminado = await ClienteModel.findOneAndUpdate({_id: args.id_cliente}, {$pull: {cards: {number: args.num_tarjeta}}}).exec();   //actualiza la tarjeta cuyo num coincida con el que le hemos pasado + del cliente q coincida con lo q hemos pasado
             if(!eliminado) throw new GraphQLError (`La tarjeta no se ha eliminado`);
-            return true;
+            return "Se ha eliminado la tarjeta";
 
         }catch(error){
             return error.message;
         }
     },
 
-    tarjetaCliente: async (_: unknown, args: {id_cliente: mongoose.Types.ObjectId, numero: string, cvv: number, expirity: string, money: number}) => {
+    addTarjeta: async (_: unknown, args: {id_cliente: mongoose.Types.ObjectId, number: string, cvv: number, expirity: string, money: number}) => {
         try{
-            const {numero, cvv, expirity, money} = args;
-            const tarjeta  = {numero, cvv, expirity, money};
+            const {number, cvv, expirity, money} = args;
+            const tarjeta  = {number, cvv, expirity, money};
 
-            const update = await ClienteModel.findOneAndUpdate({_id: args.id_cliente}, {$push: {cards: tarjeta }}).exec();
+            const update = await ClienteModel.findOneAndUpdate({_id: args.id_cliente}, {$push: {cards: tarjeta }}, {runValidators: true}).exec();
             if(!update) throw new GraphQLError(`No existe el cliente`);
-            return true;
+            return "Se ha añadido la tarjeta";
 
         }catch(error){
             return error.message;
         }
-        
     },
     
 
@@ -106,7 +105,7 @@ export const Mutation = {
         try{
             const terminado = await ViajeModel.findOneAndUpdate({_id: args.id}, {status: ESTADOS.finish}).exec();
             if(!terminado) throw new GraphQLError (`No existe el viaje`);
-            return true;
+            return "Ha terminado el viaje";
 
         }catch(error){
             return error.message;

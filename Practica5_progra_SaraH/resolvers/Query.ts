@@ -16,7 +16,7 @@ export const Query = {
                 email: client.email,
                 cards: client.cards,
                 travels: client.travels
-            }
+            };
         });
         return clientes;
     },

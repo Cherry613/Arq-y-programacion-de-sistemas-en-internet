@@ -24,19 +24,43 @@ const Schema = mongoose.Schema;
 const clienteSchema = new Schema({
     name: {type: String, required: true, minlength: 3},
     email: {type: String, required: true, lowercase: true, unique: true},
-    cards: [{type: {
+    cards: {type: [{
         number: {type: String, required: true},
         cvv: {type: Number, required: true},
         expirity: {type: String, required: true},
         money: {type: Number, required: true}
-    }, required: false}], 
-    travels: [{type: mongoose.Types.ObjectId, ref: `Travels`,
-        minLength: [24, `La longitud de una id de mongo debe de ser de exactamente 24 caracteres hexadecimales`], 
-        maxLength: [24, `La longitud de una id de mongo debe de ser de exactamente 24 caracteres hexadecimales`]}]
+    }], required: false}, 
+    travels: [{type: mongoose.Types.ObjectId, ref: `Travels`, default: []
+        /*minLength: [24, `La longitud de una id de mongo debe de ser de exactamente 24 caracteres hexadecimales`], 
+maxLength: [24, `La longitud de una id de mongo debe de ser de exactamente 24 caracteres hexadecimales`]*/}]
 })
+
+/*const clienteSchema = new Schema(
+    {
+      name: { type: String, required: true },
+      email: { type: String, required: true, unique: true}, //formato email
+      cards: { type: [{
+          number: { type: String, required: true, unique: true}, //formato tarjeta
+          cvv: { type: Number, required: true}, 
+          expirity: {type: String, required: true}, //MM/YYYY
+          money: {type: Number, required: false, default: 0},
+          }], required: false , default: []},
+      travels: { type: [Schema.Types.ObjectId], required:false, ref: "Viaje", default: []},
+    },
+    { timestamps: true }
+  );*/
 
 
 //VALIDAR
+//validar que el nombre solo sean caracteres y no haya numeros ni caracteres especiales
+clienteSchema
+    .path("name")
+    .validate( function (name: string){
+        const nameRegex = /^([\w]+)$/;
+        if(!nameRegex.test(name)) throw new GraphQLError (`El nombre no es correcto`);
+        return true;
+    });
+
 //validar que el email sea formato email -> expresiones regulares
 clienteSchema
     .path("email")
@@ -50,8 +74,9 @@ clienteSchema
 clienteSchema
     .path("cards.number")
     .validate(function(number: string){ //se usa string porque con int no se llega a numeros de 16 cifras
-        const numberRegex = /^([0-9]{16})$/;
-        if(!numberRegex.test(number)) throw new GraphQLError (`El numero de la tarjeta no es correcto`);
+        if(number.length != 16){
+            throw new GraphQLError (`El numero de la tarjeta no es correcto`);
+        }
         return true;
     });
 
@@ -60,7 +85,9 @@ clienteSchema
     .path("cards.cvv")
     .validate(function (cvv: number){
         const cvv_string = cvv.toString();
-        if(cvv_string.length != 3) throw new GraphQLError (`El cvv de la tarjeta no es correcto`);
+        if(cvv_string.length != 3){
+            throw new GraphQLError (`El cvv de la tarjeta no es correcto`);
+        }
         return true;
     });
 
@@ -86,7 +113,7 @@ clienteSchema.pre("findOneAndDelete", async function () {
     //codigo cedido por Guillermo Infiesta 
     const id_cliente = this.getQuery()["_id"]  //del {_id: args.id} q habia en el findOneAndDelete, coge el _id (el propio id de mongo, no tal cual un "_id")
     const cliente = await ClienteModel.findById(id_cliente).exec();
-    this.deleteMany({_id: {$in: cliente?.travels}}).exec(); //se borran todos los viajes q tenga ese cliente  
+    await ClienteModel.deleteMany({_id: {$in: cliente?.travels}}).exec(); //se borran todos los viajes q tenga ese cliente  
 })
 
 export type ClienteModelType = mongoose.Document & Omit<Cliente, "id">;
