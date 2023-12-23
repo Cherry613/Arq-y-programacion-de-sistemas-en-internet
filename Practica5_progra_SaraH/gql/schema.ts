@@ -36,9 +36,9 @@ export const typeDefs = `#graphql
     viajes: [Viaje!]!
   }
   type Mutation {
-    addCliente( name: String!, email: String!): Cliente!
-    addConductor( name: String!, email: String!, username: String!): Conductor!
-    addViaje(client: ID!, driver: ID!, money: Int!, distance: Int!, date: String!): Viaje!
+    addCliente( name: String!, email: String!): String!
+    addConductor( name: String!, email: String!, username: String!): String!
+    addViaje(client: ID!, driver: ID!, money: Int!, distance: Int!, date: String!): String!
     
     deleteCliente(id: ID!): String! #string que dice q hemos borrado
     deleteDriver(id: ID!): String!  #string que dice q hemos borrado

@@ -60,7 +60,7 @@ clienteSchema
     .path("cards.cvv")
     .validate(function (cvv: number){
         const cvv_string = cvv.toString();
-        if(cvv_string.length != 3) return false;
+        if(cvv_string.length != 3) throw new GraphQLError (`El cvv de la tarjeta no es correcto`);
         return true;
     });
 
