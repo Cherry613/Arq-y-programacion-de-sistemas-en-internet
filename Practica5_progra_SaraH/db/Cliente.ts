@@ -1,6 +1,7 @@
 import mongoose from "npm:mongoose@8.0.0";
 import { Cliente } from "../types.ts";
 import { GraphQLError } from "graphql";
+import { ViajeModel } from "./Viaje.ts";
 
 
 const Schema = mongoose.Schema;
@@ -112,8 +113,9 @@ clienteSchema
 clienteSchema.pre("findOneAndDelete", async function () {
     //codigo cedido por Guillermo Infiesta 
     const id_cliente = this.getQuery()["_id"]  //del {_id: args.id} q habia en el findOneAndDelete, coge el _id (el propio id de mongo, no tal cual un "_id")
+    
     const cliente = await ClienteModel.findById(id_cliente).exec();
-    await ClienteModel.deleteMany({_id: {$in: cliente?.travels}}).exec(); //se borran todos los viajes q tenga ese cliente  
+    await ViajeModel.deleteMany({_id: {$in: cliente?.travels}}).exec(); //se borran todos los viajes q tenga ese cliente antes de borrar al cliente (pre)
 })
 
 export type ClienteModelType = mongoose.Document & Omit<Cliente, "id">;
