@@ -1,5 +1,5 @@
 import {Request, Response} from "npm:express@4.17.2";
-import { MonumentoModel } from "../db/monumento.ts";
+import { MonumentoModel } from "../db/Monumento.ts";
 
 const updateMonumento =async (req: Request, res: Response) => {
     try{
